@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style type="text/css">
+ <style type="text/css">
         p{
             font-family: times new roman;
             color: blue;
