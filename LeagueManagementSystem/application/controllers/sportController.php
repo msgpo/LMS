@@ -76,7 +76,7 @@ class SportController extends CI_Controller
 		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$id = $this->uri->segment(3);
-			$data['row'] = $this->sportList->getSportById($id)->result();
+			$data['row'] = $this->sport->getSportById($id)->result();
 			$data['title'] = "Donut Fortress League Management System: Sport Module";
 			$data['headline'] = "Edit Sport Name";
 			$data['include'] = 'sport/sport_edit';
@@ -112,7 +112,7 @@ class SportController extends CI_Controller
 	{
 		$sport_id = $this->uri->segment(3);
 		$this->sportList->disableSport($sport_id);
-		redirect('sportController/index','refresh');
+		redirect('sportController/index');
 	}
 	
 }
