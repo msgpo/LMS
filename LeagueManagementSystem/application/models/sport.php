@@ -22,21 +22,26 @@ class Sport extends CI_Model
 	{
 		$this->db->query("UPDATE sport SET sportname='$sportname' WHERE sportname='$this->sportname'");
 	}
-	function checkIfSportnameIsBlank()
+	function sportnameIsBlank()
 	{
-		if(strlen($this->sportname)==0)
-			return 1;
+		if(trim($this->sportname)=="")
+			return TRUE;
 		else
-			return 0;
+			return FALSE;
 	}
+	function sportnameExist()
+	{
+		$sportname=strtolower($this->sportname);
+		$result=$this->db->query("SELECT * FROM sport where sportname='$sportname' AND accessible='true'");
+		if($result->num_rows()>0)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
 	function getSportById($id)
 	{
-		$query=$this->db->query("SELECT * FROM sport where sport_id='$id");
-		foreach($query->result() as $row)
-		{
-			$result= $row->sportname;
-		}
-		return $result;
+		return $result=$this->db->get_where('sport', array('sport_id'=> $id));
 	}
 }
 ?>
