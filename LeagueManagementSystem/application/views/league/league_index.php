@@ -1,10 +1,6 @@
 <form action="<?php echo base_url()?>index.php/leagueController/index" method="post" accept-charset="utf-8">
 <p> Search for a League: <input type="text" name="leaguename" value=""></p>
 <input type="submit" name="" value="Search"></form>
-<?php
-	if (isset($_POST['leaguename']))
-	{
-?>
 <table>
 <tr>
 	<th>League Name</th>
@@ -24,6 +20,3 @@ foreach ($leagues_query->result() as $league)
 }
 ?>
 </table>
-<?php
-}
-?>

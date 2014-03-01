@@ -21,9 +21,13 @@ class LeagueController extends CI_Controller
 		{
 			if (isset($_POST['leaguename']))
 			{
-			$leagues_qry = $this->leagueList->searchLeague(strtolower($_POST['leaguename']));
-			$data['leagues_query'] = $leagues_qry;
+				$leagues_qry = $this->leagueList->searchLeague(strtolower($_POST['leaguename']));
 			}
+			else
+			{
+				$leagues_qry = $this->leagueList->getNotStartedLeagues();
+			}
+			$data['leagues_query'] = $leagues_qry;
 			$data['title'] = "Donut Fortress League Management System: League Module";
 			$data['headline'] = "League Listing";
 			$data['include'] = 'league/league_index';
