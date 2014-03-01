@@ -9,7 +9,7 @@
 <p>Sport:
 <select name="sport_id">
 <?php
-	foreach($sportList->result as $sport)
+	foreach($sportList->result() as $sport)
 	{
 		echo '<option value="';
 		echo $sport->sport_id;
