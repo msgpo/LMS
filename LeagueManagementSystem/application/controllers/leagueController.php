@@ -10,6 +10,8 @@ class LeagueController extends CI_Controller
 		$this->load->library('table');
 		$this->load->model('authentication','',TRUE);
 		$this->load->model('leagueList','',TRUE);
+		// sportList model included in order to generate a drop-down list of sports in the create league function
+		$this->load->model('sportList','',TRUE);
 		$this->load->library('form_validation');
 	}
 	
@@ -44,6 +46,24 @@ class LeagueController extends CI_Controller
 			$data['title'] = "Donut Fortress League Management System: League Module";
 			$data['headline'] = "League Information";
 			$data['include'] = 'league/league_info';
+			$data['masthead'] = 'league/league_masthead';
+			$data['nav'] = 'league/league_navigation';
+			$data['sidebar'] = 'league/league_sidebar';
+			$this->load->view('template', $data);
+		}
+		else
+			redirect('login');
+	}
+	
+	function createLeague()
+	{
+		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		{
+			$sportList = $this->sportList->getSportList();
+			$data['sportList'] = $sportList;
+			$data['title'] = "Donut Fortress League Management System: League Module";
+			$data['headline'] = "League Information";
+			$data['include'] = 'league/league_add';
 			$data['masthead'] = 'league/league_masthead';
 			$data['nav'] = 'league/league_navigation';
 			$data['sidebar'] = 'league/league_sidebar';
