@@ -58,6 +58,22 @@ class LeagueList extends CI_Model
 		else
 			return "League id not Found";
 	}
+	
+	public function getNotStartedLeagues()
+	{
+		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.isstarted = false AND league.accessible = true");
+	}
+	
+	public function getLeagueById($league_id)
+	{
+		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.league_id = '$league_id'");
+	}
+	
+	public function searchLeague($leaguename)
+	{
+		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.isstarted = false AND league.accessible = true AND leaguename LIKE '%$leaguename%'");
+	}
+	
 	function collect_errors($league)
 	{
 		$errors=array();

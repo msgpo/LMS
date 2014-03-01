@@ -1,1 +1,1 @@
-<p>Coming soon</p>
+<a href="<?php echo base_url(); ?>index.php/leagueController/createLeague" >Create New League</a>
