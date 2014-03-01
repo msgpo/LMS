@@ -4,8 +4,10 @@
 <head>
     <title><?php echo $title;?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" href="<?php echo base_url(); ?>bootstrap/dist/css/bootstrap.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php echo base_url(); ?>df_lms/stylesheets/screen.css" type="text/css" media="screen" />
-	
+	<script type="text/javascript" src="<?php echo base_url(); ?>scripts/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>bootstrap/dist/js/bootstrap.js"></script>
 </head>
 <body>
     <div id="header">
