@@ -17,20 +17,15 @@ class LeagueController extends CI_Controller
 	{
 		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
 			{
-			
-				// display information for the view
-				// $data['curController'] = $this->uri->segment(1);
 				$data['title'] = "Donut Fortress League Management System: League Module";
 				$data['headline'] = "League Listing";
-				$data['include'] = 'league_index';
-				$data['masthead'] = 'league_masthead';
-				$data['nav'] = 'league_navigation';
-				$data['sidebar'] = 'league_sidebar';
+				$data['include'] = 'league/league_index';
+				$data['masthead'] = 'league/league_masthead';
+				$data['nav'] = 'league/league_navigation';
+				$data['sidebar'] = 'league/league_sidebar';
 				$this->load->view('template', $data);
 			}
 			else
-			{
 				redirect('login');
-			}
 	}
 }

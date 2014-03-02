@@ -8,7 +8,7 @@ class Authentication extends CI_Model
 			$this->load->model('account','',TRUE);
 		}
 
-		function login($account)    //1 means the username&password is correct
+		function login($account)
         {
 			if($this->correctCredentials($account->getUsername(),$account->getPassword())==1)
 				return null;
@@ -26,6 +26,7 @@ class Authentication extends CI_Model
 			else 
 				return 0;
 		}
+		
 		function checkIfLoggedIn($username)
 		{
 			$result=$this->db->query("SELECT * FROM account where username='$username'");

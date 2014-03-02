@@ -4,18 +4,18 @@ class Login extends CI_Controller
 {
         function __construct()
         {
-                parent::__construct();
-				$this->load->model('account','',TRUE);
-				$this->load->model('authentication','',TRUE);
+            parent::__construct();
+			$this->load->model('account','',TRUE);
+			$this->load->model('authentication','',TRUE);
         }
 
-		public function index()
+		function index()
         {
 			$data['message']=null;
 			$this->load->view('login',$data);
         }
 		
-		public function logging_in()
+		function logging_in()
 		{
 			$account=$this->account->constructor($this->input->post("username"),$this->input->post("password"));
 			$result=$this->authentication->login($account);

@@ -18,10 +18,10 @@ class Home extends CI_Controller
 				// $data['curController'] = $this->uri->segment(1);
 				$data['title'] = "Donut Fortress League Management System: League Manager Panel";
 				$data['headline'] = "Welcome.";
-				$data['include'] = 'home_index';
-				$data['nav'] = 'home_navigation';
-				$data['masthead'] = 'home_masthead';
-				$data['sidebar'] = 'home_sidebar';
+				$data['include'] = 'home/home_index';
+				$data['nav'] = 'home/home_navigation';
+				$data['masthead'] = 'home/home_masthead';
+				$data['sidebar'] = 'home/home_sidebar';
 				$this->load->view('template', $data);
 			}
 			else
