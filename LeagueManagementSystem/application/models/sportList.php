@@ -5,6 +5,8 @@ class SportList extends CI_Model
     {
         parent::__construct();
 		$this->load->model('sport','',TRUE);
+		$this->load->library('form_validation');
+		$this->load->helper('form');
     }
 	
 	function addSport($sportname)
