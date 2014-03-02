@@ -104,7 +104,6 @@ class SportController extends CI_Controller
 		}
 		else
 			redirect('login');
-<<<<<<< HEAD
 	}
 	
 	function remove()
@@ -115,15 +114,3 @@ class SportController extends CI_Controller
 	}
 	
 }
-=======
-	}
-	
-	function remove()
-	{
-		$sport_id = $this->uri->segment(3);
-		$this->sportList->disableSport($sport_id);
-		redirect('sportController/index');
-	}
-	
-}
->>>>>>> 22a536406f443dc265634795bfe8639019747b06
