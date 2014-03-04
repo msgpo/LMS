@@ -4,21 +4,26 @@
 <head>
     <title><?php echo $title;?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<!-- JQuery library -->
 	<script type="text/javascript" src="<?php echo base_url(); ?>scripts/jquery.min.js"></script>
+	<!-- Twitter Bootstrap-->
 	<script type="text/javascript" src="<?php echo base_url(); ?>scripts/bootstrap.min.js"></script> 
-<!--	<link rel="stylesheet" href="<?php echo base_url(); ?>bootstrap/dist/css/bootstrap.css" type="text/css" media="screen" /> -->
+	<!-- LMS CSS based on Head First Web Design's "Sample Rate" -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>df_lms/stylesheets/screen.css" type="text/css" media="screen" />
-<!--	<script type="text/javascript" src="<?php echo base_url(); ?>bootstrap/dist/js/bootstrap.js"></script> -->
+	<!-- Twitter Bootstrap CSS -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>styles/bootstrap-combined.min.css" type="text/css" media="screen" /> 
 
 </head>
 <body>
+	<!-- The system logo is here. -->
     <div id="header">
         <div id="logo"><img alt="Donut Fortress LMS" src="<?php echo base_url(); ?>df_lms/images/df_lms.png" /></div>
     </div>
+	<!-- Inside the nav div is the code for navigation -->
     <div id="nav">
         <?php $this->load->view($nav); ?>
     </div>
+	<!-- The container div has the content, that makes up the page's bread and butter. The sidebar contains additional options per module, or can be used as secondary navigation. -->
     <div id="container">
 		<?php $this->load->view($masthead); ?>
 	<div id="content">
@@ -37,6 +42,7 @@
     </div>
     </div>
 
+<!-- TODO: Refactor this -->
 <script>
  $(function() 
  {
