@@ -4,10 +4,13 @@
 <head>
     <title><?php echo $title;?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>bootstrap/dist/css/bootstrap.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="<?php echo base_url(); ?>scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>scripts/bootstrap.min.js"></script> 
+<!--	<link rel="stylesheet" href="<?php echo base_url(); ?>bootstrap/dist/css/bootstrap.css" type="text/css" media="screen" /> -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>df_lms/stylesheets/screen.css" type="text/css" media="screen" />
-	<script type="text/javascript" src="<?php echo base_url(); ?>scripts/jquery-1.9.1.js"></script>
-	<script type="text/javascript" src="<?php echo base_url(); ?>bootstrap/dist/js/bootstrap.js"></script>
+<!--	<script type="text/javascript" src="<?php echo base_url(); ?>bootstrap/dist/js/bootstrap.js"></script> -->
+	<link rel="stylesheet" href="<?php echo base_url(); ?>styles/bootstrap-combined.min.css" type="text/css" media="screen" /> 
+
 </head>
 <body>
     <div id="header">
@@ -16,7 +19,7 @@
     <div id="nav">
         <?php $this->load->view($nav); ?>
     </div>
-    <div id="wrap">
+    <div id="container">
 		<?php $this->load->view($masthead); ?>
 	<div id="content">
         <h1><?php echo $headline;?></h1>
@@ -25,32 +28,74 @@
     <div id="sidebar">
 		<h1>Options</h1>
 		<?php
-		/*
-			if ($curController == "home")
-			{
-				echo '<p>Coming soon</p>';
-			}
-			
-			if ($curController == "sportController")
-			{
-				echo '<a href="';
-				echo base_url();
-				$message="";
-				echo 'index.php/sportController/addSport">Add Sport</a>';
-			}
-			
-			if ($curController == "leagueController")
-			{
-				echo '<p>Coming soon</p>';
-			}
-		*/
-		$this->load->view($sidebar);
+			$this->load->view($sidebar);
 		?>
 			
-        </div>
-        <div id="footer">
-            <p>Copyright &copy; 2014 Donut Fortress Australia, all rights reserved.</p>
-        </div>
     </div>
+    <div id="footer">
+        <p>Copyright &copy; 2014 Donut Fortress Australia, all rights reserved.</p>
+    </div>
+    </div>
+
+<script>
+ $(function() 
+ {
+	//twitter bootstrap script
+	$("button#submit").click(function()
+	{
+		$.ajax(
+		{
+    		type: "POST",
+			url: "sportController/create/",
+			data: $('form.contact').serialize(),
+        		success: function(msg){
+					var message = "";
+					message = "<?php echo $this->session->userdata('err') ?>";
+					if(message == "The Sportname field is required")
+					{
+						// Empty sportname
+						if(!($("div#tooltip").hasClass("alert alert-error")))
+						{
+							$("div#tooltip").removeClass().addClass("alert alert-error");
+						}
+						$("div#tooltip").html('<strong>WARNING:  </strong>Sport name is required.');
+						message = "";
+						<?php
+						$errors=array('err'=> null);
+						$this->session->set_userdata($errors);
+						?>
+					}
+					if (message == "The Sportname already exist")
+					{
+						if(!($("div#tooltip").hasClass("alert alert-error")))
+						{
+							$("div#tooltip").removeClass().addClass("alert alert-error");
+						}
+						$("div#tooltip").html('<strong>WARNING:  </strong>This sport has already existed.');
+						message = "";
+						<?php
+						$errors=array('err'=> null);
+						$this->session->set_userdata($errors);
+						?>
+					}
+					if (message != "The Sportname already exist" && message != "The Sportname field is required")
+					{
+						<?php
+						$errors=array('err'=> null);
+						$this->session->set_userdata($errors);
+						?>
+						alert("Validation passed. Modal will now hide.");
+						
+						$("#form-content").modal('hide');	
+					}
+ 		        },
+			error: function(){
+				alert("failure");
+				}
+      		});
+	});
+});
+</script>	
+
 </body>
 </html>
