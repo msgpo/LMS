@@ -11,7 +11,7 @@ class TestLeague extends CI_Model
 		
 		function testForValidLeagueCreation()
 		{
-			$league=$this->league->constructor("Palakasan 2011",15,"Double Elimination", "2014-08-14");
+			$league=$this->league->constructor("Palakasan 2018",15,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result;
 			$expected_result=1;
@@ -34,7 +34,7 @@ class TestLeague extends CI_Model
 			$league=$this->league->constructor("Palakasan 2019",15," ", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
-			$expected_result="Invalid Tournament type";
+			$expected_result="The Tournament type is unspecified";
 			$test_name = 'Test of Invalid Tournament';
 			$this->unit->run($test_res, $expected_result, $test_name); 
 		}
@@ -45,7 +45,7 @@ class TestLeague extends CI_Model
 			$league=$this->league->constructor("palakasan 2014",15,"Single Elimination", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
-			$expected_result="league name already exist in a given sport";
+			$expected_result="league name already exist within the given sport";
 			$test_name = 'Test of Invalid League name (league name already exist within the given sport)';
 			$this->unit->run($test_res, $expected_result, $test_name); 
 		}
@@ -65,7 +65,7 @@ class TestLeague extends CI_Model
 			$league=$this->league->constructor("Palakasan 2019",15,"Double Elimination", "2014/20/10");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
-			$expected_result= "Invalid date syntax. The syntax mus be yyyy-mm-dd";
+			$expected_result= "Invalid date syntax. The syntax must be yyyy-mm-dd";
 			$test_name = 'Test of Invalid Creating League(Invalid syntax of date)';
 			$this->unit->run($test_res, $expected_result, $test_name); 
 		}
@@ -83,9 +83,9 @@ class TestLeague extends CI_Model
 		function testForInvalidLeagueEdition1()
 		{
 			$league=$this->league->constructor("Palakasan 2017",15,"double Elimination", "2014-09-10");
-			$result = $this->leagueList->editLeague(4,$league);
+			$result = $this->leagueList->editLeague(10000,$league);
 			$test_res=$result[0];
-			$expected_result= "League id not Found";
+			$expected_result= "League id not found";
 			$test_name = 'Test of Invalid Editing League (league_id not Found)';
 			$this->unit->run($test_res, $expected_result, $test_name);
 		}
@@ -105,7 +105,7 @@ class TestLeague extends CI_Model
 			$league=$this->league->constructor("Palakasan 2017",15,"myingle Elimination", "2014-08-14");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
-			$expected_result="Invalid Tournament type";
+			$expected_result="The Tournament type is unspecified";
 			$test_name = 'Test for invalid Editing League (Invalid Tournament)';
 			$this->unit->run($test_res, $expected_result, $test_name); 
 		}
@@ -115,7 +115,7 @@ class TestLeague extends CI_Model
 			$league=$this->league->constructor("Palakasan 2014",15,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
-			$expected_result="league name already exist in a given sport";
+			$expected_result="league name already exist within the given sport";
 			$test_name = 'Test of Invalid Editing League (The given league name has already exist within the given sport)';
 			$this->unit->run($test_res, $expected_result, $test_name); 
 		}
@@ -134,7 +134,7 @@ class TestLeague extends CI_Model
 			$league=$this->league->constructor("Palakasan 2017",15,"Double Elimination", "2014/20/10");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
-			$expected_result= "Invalid date syntax. The syntax mus be yyyy-mm-dd";
+			$expected_result= "Invalid date syntax. The syntax must be yyyy-mm-dd";
 			$test_name = 'Test of Invalid Editing League(The given date format is invalid)';
 			$this->unit->run($test_res, $expected_result, $test_name); 
 		}
@@ -153,7 +153,7 @@ class TestLeague extends CI_Model
 			$result = $this->leagueList->deactivateLeague(100);
 			$test_res=$result;
 			$expected_result="League id not Found";
-			$test_name = 'Test of Valid Deactivating League (League id doesnt exist in database)';
+			$test_name = 'Test of Invalid Deactivating League (League id doesnt exist in database)';
 			$this->unit->run($test_res, $expected_result, $test_name);
 		}
 		

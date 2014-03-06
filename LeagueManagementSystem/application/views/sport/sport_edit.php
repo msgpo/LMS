@@ -8,4 +8,4 @@
 <input type="hidden" name="sport_id" value="<?php echo $row[0]->sport_id;?>">
 <p>Sportname: <input type="text" name="sportname" value="<?php echo ucwords($row[0]->sportname); ?>"></p>
 <input type="submit" name="" value="Edit Sport"></form>
-<?php echo '<p1>'.$this->session->userdata('err').'</p1>'; ?> 
+<?php echo '<p1>'.$this->session->userdata('err').'</p1>'; ?>

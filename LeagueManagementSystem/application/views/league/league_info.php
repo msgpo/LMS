@@ -6,19 +6,19 @@
 	foreach($leagueDetails->result() as $ldetails)
 	{
 		echo '<tr>';
-		echo '<td>League Name</td><td>' . ucwords($ldetails->leaguename) . '</td>';
+		echo '<td>League Name: </td><td>' . ucwords($ldetails->leaguename) . '</td>';
 		echo '</tr>';
 		echo '<tr>';
-		echo '<td>Sport</td><td>' . $ldetails->sportname . '</td>';
+		echo '<td>Sport: </td><td>' . $ldetails->sportname . '</td>';
 		echo '</tr>';
 		echo '<tr>';
-		echo '<td>Tournament Format</td><td>' . $ldetails->tournamenttype . '</td>';
+		echo '<td>Tournament Format: </td><td>' . $ldetails->tournamenttype . '</td>';
 		echo '</tr>';
 		echo '<tr>';
-		echo '<td>Registration</td><td>' . $ldetails->registrationdeadline . '</td>';
+		echo '<td>Registration: </td><td>' . $ldetails->registrationdeadline . '</td>';
 		echo '</tr>';
 		echo '<tr>';
-		echo '<td>Status</td><td>';
+		echo '<td>Status: </td><td>';
 		if ($ldetails->isstarted == "f" && $ldetails->isended == "f")
 			echo 'Not Started';
 		if ($ldetails->isstarted == "t" && $ldetails->isended == "f")

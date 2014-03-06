@@ -41,7 +41,7 @@ class Sport extends CI_Model
 	
 	function getSportById($id)
 	{
-		return $result=$this->db->query("SELECT * FROM sport where sport_id=$id AND accessible='true'");
+		return $result=$this->db->query("SELECT * FROM sport where sport_id='$id' AND accessible='true'");
 	}
 }
 ?>
