@@ -1,51 +1,48 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+include_once(APPPATH .'models/sport.php');
 class SportList extends CI_Model 
 {
 	function __construct()
     {
         parent::__construct();
-		$this->load->model('sport','',TRUE);
     }
 	
-	function addSport($sportname)
+	function addSport(Sport $sport)
 	{
-		$sport=$this->sport->constructor($sportname);
-		if((!$sport->sportnameExist())&&(!$sport->sportnameIsBlank()))
-			return $this->insert($sportname);
+		if((!$this->sportnameExist($sport))&&(!$this->sportnameIsBlank($sport)))
+			return $this->insert($sport);
 		else
-			return ($this->invalidAddOrUpdateSport($sportname));
+			return ($this->invalidAddOrUpdateSport($sport));
 	}
 	
-	function invalidAddOrUpdateSport($sportname)
+	function invalidAddOrUpdateSport(Sport $sport)
 	{
-		$sport=$this->sport->constructor($sportname);
-		if($sport->sportnameExist())
+		if($this->sportnameExist($sport))
 			return "The Sportname already exist";
-		else if ($sport->sportnameIsBlank())
+		else if ($this->sportnameIsBlank($sport))
 			return "The Sportname field is required";
 	}
 	
-	function insert($sportname)
+	function insert(Sport $sport)
 	{
-		$s=strtolower($sportname);
+		$s=strtolower($sport->getSportname());
 		$this->db->query("INSERT INTO sport(sportname) VALUES ('$s')");
 		return 1;
 	}
 	
-	function editSport($id,$newSportname)
+	function editSport($id, Sport $newSport)
 	{
-		$sport=$this->sport->constructor($newSportname);
-		if((!$sport->sportnameExist())&&(!$sport->sportnameIsBlank()))
-			return $this->update($id, $newSportname);
+		if((!$this->sportnameExist($newSport))&&(!$this->sportnameIsBlank($newSport)))
+			return $this->update($id, $newSport);
 		else
-			return ($this->invalidAddOrUpdateSport($newSportname));
+			return ($this->invalidAddOrUpdateSport($newSport));
 	}
 	
-	function update($id, $sportname)
+	function update($id, Sport $sport)
 	{
-		if($this->sport->getSportById($id)->num_rows()>0)
+		if($this->getSportById($id)->num_rows()>0)
 		{
-			$sportname=strtolower($sportname);
+			$sportname=strtolower($sport->getSportname());
 			$this->db->query("UPDATE sport SET sportname='$sportname' WHERE sport_id='$id'");
 			return 1;
 		}
@@ -60,13 +57,35 @@ class SportList extends CI_Model
 	
 	function disableSport($id)
 	{
-		if($this->sport->getSportById($id)->num_rows()>0)
+		if($this->getSportById($id)->num_rows()>0)
 		{
 			$this->db->query("UPDATE sport SET accessible = 'false' WHERE sport_id = '$id'");
 			return 1;
 		}
 		else
 			return "Sport id not found";
+	}
+	
+	function sportnameExist($sport)
+	{
+		$sportname=strtolower($sport->getSportname());
+		$result=$this->db->query("SELECT * FROM sport where sportname='$sportname' AND accessible='true'");
+		if($result->num_rows()>0)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	function sportnameIsBlank($sport)
+	{
+		if(trim($sport->getSportname())=="")
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	function getSportById($id)
+	{
+		return $this->db->query("SELECT * FROM sport where sport_id=$id AND accessible='true'");
 	}
 }
 ?>
