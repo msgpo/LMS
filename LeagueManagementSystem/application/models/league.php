@@ -6,6 +6,7 @@ class League extends CI_Model
 		private $sport_id;
 		private $tournamentType;
 		private $registrationDeadline;
+		private $tournaments=array('a'=>"single elimination", 'b'=>"double elimination", 'c'=>"round robin");
 		public function __construct()
 		{
 			parent::__construct();
@@ -36,6 +37,10 @@ class League extends CI_Model
 		{
 			return $this->registrationDeadline;
 		}
+		public function getTournaments()
+		{
+			return $this->tournaments;
+		}
 		
 		public function blankfield($anyField)
 		{
@@ -48,8 +53,7 @@ class League extends CI_Model
 		public function invalidTounramentType()
 		{
 			$field=true;
-			$tournaments=array('a'=>"single elimination", 'b'=>"double elimination", 'c'=>"round robin");
-			foreach($tournaments as $t)
+			foreach($this->tournaments as $t)
 			{
 				if(strtolower($this->tournamentType)==$t)
 					$field=false;
@@ -75,6 +79,13 @@ class League extends CI_Model
 				return FALSE;
 		}
 		
+		public function isStarted($id)
+		{
+			$result=$this->getLeagueById($id)->result();
+			if($result[0]->isstarted=="t")
+				return TRUE;
+		}
+		
 		public function sportIdNotFound()
 		{
 			$result=$this->sport->getSportById($this->sport_id);
@@ -84,10 +95,16 @@ class League extends CI_Model
 				return TRUE;
 		}
 		
+		public function leaguenameandSportIsUnchanged($leaguename,$sport_id)
+		{
+			if((strtolower($this->leaguename)==strtolower($leaguename))&&($this->sport_id==$sport_id))
+				return TRUE;
+			else
+				return FALSE;
+		}
 		public function getLeagueById($id)
 		{
-			//return $result=$this->db->get_where('league', array('league_id'=> $id));
-			return $result=$this->db->query("SELECT * FROM league where league_id=$id AND accessible='true'");
+			return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.league_id = '$id' AND league.accessible=true");
 		}
 		
 		/**function checkIfLeagueNameExist()

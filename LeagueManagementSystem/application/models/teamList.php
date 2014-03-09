@@ -1,29 +1,29 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class LeagueList extends CI_Model 
+class TeamList extends CI_Model 
 {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('league','',TRUE);
+		$this->load->model('team','',TRUE);
 	}
-	public function createLeague($league)
+	public function addTeam($team)
 	{
-		$errors=$this->collect_errors($league,"","");
+		$errors=$this->collect_errors($team,"","");
 		if(count($errors)>0)
 			return $errors;
 		else 
-			return $this->insert($league);
+			return $this->insert($team);
 	}
 	
-	public function insert($league)
+	public function insert($team)
 	{
-		$leaguename=strtolower($league->getLeaguename()); $sport_id=$league->getSport_id(); $tournamentType=strtolower($league->getTournamentType()); $registrationDeadline=$league->getRegistrationDeadline();
-		$this->db->query("INSERT into league(leaguename,sport_id,tournamenttype,registrationdeadline) VALUES ('$leaguename','$sport_id','$tournamentType','$registrationDeadline')");
+		$teamname=strtolower($team->getTeamname()); $league_id=$team->getLeague_id();  $coachLastname=strtolower($team->getCoachLastname()); $coachFirstname=strtolower($team->getCoachFirstname());  $coachPhonenumber=strtolower($team->getCoachPhonenumber());  $teamDesc=strtolower($team->getTeamDesc());
+		$this->db->query("INSERT into team(teamname,league_id, coachlastname, coachfirstname, coachphonenumber, teamdesc) VALUES ('$teamname', '$league_id', '$coachLastname', '$coachFirstname', '$coachPhonenumber', '$teamDesc')");
 		return 1;
 	}
 	
-	public function editLeague($league_id,$new_league)
+	/**public function editLeague($league_id,$new_league)
 	{
 		if($this->league->getLeagueById($league_id)->num_rows()>0)
 		{
@@ -73,41 +73,47 @@ class LeagueList extends CI_Model
 	public function getAllLeagues()
 	{
 		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true ORDER BY league.league_id");
-	}
+	}**/
 	
-	function collect_errors($league,$leaguename,$sport_id)
+	function collect_errors($team,$teamname)
 	{
 		$errors=array();
-		if(!($league->leaguenameandSportIsUnchanged($leaguename,$sport_id)))
+		if(!($team->teamnameIsUnchanged($teamname)))
 		{
-			if($league->leaguenameExistWithinTheSport())
+			if($team->teamnameExistWithinTheLeague())
 			{
-				$error= "league name already exist within the given sport";
+				$error= "team name already exist within the given league";
 				array_push($errors,$error);
 			}
 		}
 		
-		if($league->blankfield($league->getLeaguename()))
+		if($team->blankfield($team->getTeamname()))
 		{
-			$error= "The Leaguename field is required";
+			$error= "The Teamname field is required";
 			array_push($errors,$error);
 		}
 		
-		if($league->invalidDateSyntax())
+		if($team->blankfield($team->getCoachLastname()))
 		{
-			$error= "Invalid date syntax. The syntax must be yyyy-mm-dd";
+			$error= "The Lastname field is required";
 			array_push($errors,$error);
 		}
 		
-		if($league->invalidTounramentType())
+		if($team->blankfield($team->getCoachFirstname()))
 		{
-			$error= "The Tournament type is unspecified";
+			$error= "The Firstname field is required";
 			array_push($errors,$error);
 		}
 		
-		if($league->sportIdNotFound())
+		if($team->invalidPhoneNumberSyntax())
 		{
-			$error= "Sport id not found";
+			$error= "The Phone number field is invalid";
+			array_push($errors,$error);
+		}
+		
+		if($team->leaugeIdNotFound())
+		{
+			$error= "league id not found";
 			array_push($errors,$error);
 		}
 		return $errors;

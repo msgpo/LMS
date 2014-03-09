@@ -4,6 +4,7 @@
 <head>
     <title><?php echo $title;?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
 	<!-- JQuery library -->
 	<script type="text/javascript" src="<?php echo base_url(); ?>scripts/jquery.min.js"></script>
 	<!-- Twitter Bootstrap-->

@@ -61,7 +61,7 @@ class SportController extends CI_Controller
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-			//	redirect('sportController/addSport');
+				redirect('sportController/addSport');
 			}
 		}
 		else

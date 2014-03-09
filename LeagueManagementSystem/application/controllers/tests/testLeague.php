@@ -1,12 +1,33 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class TestLeague extends CI_Model 
+class TestLeague extends CI_Controller 
 {
-        function __construct()
+		 function __construct()
         {
-                parent::__construct();
-                $this->load->library('unit_test');
-                $this->load->model('leagueList','',TRUE);
+            parent::__construct();
+			$this->load->library('unit_test');
+			$this->load->model('leagueList','',TRUE);
+        }
+
+        public function index()
+        {
+            $this->testForValidLeagueCreation();
+			$this->testForInvalidLeagueCreation1();
+			$this->testForInvalidLeagueCreation2();
+			$this->testForInvalidLeagueCreation3();
+			$this->testForInvalidLeagueCreation4();
+			$this->testForInvalidLeagueCreation5();
+			$this->testForValidLeagueEdition();
+			$this->testForInvalidLeagueEdition1();
+			$this->testForInvalidLeagueEdition2();
+			$this->testForInvalidLeagueEdition3();
+			$this->testForInvalidLeagueEdition4();
+			$this->testForInvalidLeagueEdition5();
+			$this->testForInvalidLeagueEdition6();
+			$this->testForValidDeactivatingLeague();
+			$this->testForInvalidDeactivatingLeague();
+			echo $this->unit->report();
+            echo base_url();
         }
 		
 		function testForValidLeagueCreation()
@@ -166,6 +187,4 @@ class TestLeague extends CI_Model
 			$this->unit->run($test_res, $expected_result, $test_name);
 		}**/
 }
-
-/* End of file testLeague.php */
-/* Location: ./application/models/testLeague.php */
+?>
