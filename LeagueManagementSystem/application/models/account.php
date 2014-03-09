@@ -1,19 +1,12 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
-class Account extends CI_Model
+<?php
+class Account
 {
         private $username;
-		private $password;
-		public function __construct()
-		{
-			parent::__construct();
-		}
-		
-		function constructor($username,$password)
+		private $password;	
+		function __construct($username,$password)
 		{
 			$this->username=$username;
 			$this->password=$password;
-			return $this;
 		}
 		
 		public function getUsername()
@@ -25,6 +18,5 @@ class Account extends CI_Model
         {
 			return $this->password;
         }
-		
 }
-?>
+?>	
