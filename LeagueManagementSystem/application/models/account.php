@@ -1,22 +1,22 @@
 <?php
 class Account
 {
-        private $username;
-		private $password;	
-		function __construct($username,$password)
-		{
-			$this->username=$username;
-			$this->password=$password;
-		}
-		
-		public function getUsername()
-        {
-			return $this->username;
-        }
-		
-		public function getPassword()
-        {
-			return $this->password;
-        }
+	private $username;
+	private $password;	
+	function __construct($username,$password)
+	{
+		$this->username=$username;
+		$this->password=$password;
+	}
+	
+	public function getUsername()
+	{
+		return $this->username;
+	}
+	
+	public function getPassword()
+	{
+		return $this->password;
+	}
 }
 ?>	
