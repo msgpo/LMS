@@ -1,0 +1,41 @@
+CREATE TABLE account
+(
+username varchar(50),
+password varchar(50),
+primary key(username)
+);
+
+CREATE TABLE sport
+(
+  sport_id serial, 
+  sportname varchar(50),
+   primary key(sport_id)
+);
+
+CREATE TABLE league
+(
+ league_id serial UNIQUE,
+ sport_id serial,
+ leaguename varchar(50),
+ tournamentType varchar(50),
+ registrationDeadline date,
+ isStarted boolean,
+ isEnded boolean,
+ primary key(league_id, sport_id),
+ foreign key(sport_id) references sport(sport_id)
+);
+
+
+
+create table team
+(
+ team_id serial,
+ league_id serial,
+ teamname varchar(50),
+ coachlastname varchar(50),
+ coachfirstname varchar(50),
+ coachphonenumber varchar(50),
+ teamdesc varchar(250),
+ primary key(team_id, league_id),
+ foreign key (league_id) references league(league_id)
+);

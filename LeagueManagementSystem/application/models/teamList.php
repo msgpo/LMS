@@ -1,13 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+include_once(APPPATH .'models/team.php');
 class TeamList extends CI_Model 
 {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('team','',TRUE);
 	}
-	public function addTeam($team)
+	public function addTeam(Team $team)
 	{
 		$errors=$this->collect_errors($team,"","");
 		if(count($errors)>0)
@@ -16,106 +15,109 @@ class TeamList extends CI_Model
 			return $this->insert($team);
 	}
 	
-	public function insert($team)
+	public function insert(Team $team)
 	{
 		$teamname=strtolower($team->getTeamname()); $league_id=$team->getLeague_id();  $coachLastname=strtolower($team->getCoachLastname()); $coachFirstname=strtolower($team->getCoachFirstname());  $coachPhonenumber=strtolower($team->getCoachPhonenumber());  $teamDesc=strtolower($team->getTeamDesc());
 		$this->db->query("INSERT into team(teamname,league_id, coachlastname, coachfirstname, coachphonenumber, teamdesc) VALUES ('$teamname', '$league_id', '$coachLastname', '$coachFirstname', '$coachPhonenumber', '$teamDesc')");
 		return 1;
 	}
 	
-	/**public function editLeague($league_id,$new_league)
-	{
-		if($this->league->getLeagueById($league_id)->num_rows()>0)
-		{
-			$result=$this->league->getLeagueById($league_id)->result();
-			$errors=$this->collect_errors($new_league,$result[0]->leaguename,$result[0]->sport_id);
-			if(count($errors)>0)
-				return $errors;
-			else
-			{	
-				$result=$this->update($league_id,$new_league);
-				if($result==1)
-					return $result;
-				array_push($errors,$result);
-				return $errors;
-			}
-		}
-		else
-		{
-			$errors=array();
-			array_push($errors,"League id not found");
-			return $errors;
-		}
-	}
 	
-	public function update($league_id,$league)
-	{
-		$leaguename=strtolower($league->getLeaguename()); $sport_id=$league->getSport_id(); $tournamentType=strtolower($league->getTournamentType()); $registrationDeadline=$league->getRegistrationDeadline();
-		$this->db->query("UPDATE league set leaguename='$leaguename',sport_id='$sport_id',tournamenttype='$tournamentType',registrationdeadline='$registrationDeadline' where league_id=$league_id AND accessible='true'");
-		return 1;
-	}
-	
-	public function deactivateLeague($league_id)
-	{
-		if($this->league->getLeagueById($league_id)->num_rows()>0)
-		{
-			$this->db->query("UPDATE league set accessible='false' where league_id=$league_id");
-			return 1;
-		}
-		else
-			return "League id not Found";
-	}
-
-	public function searchLeague($leaguename)
-	{
-		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true AND leaguename LIKE '%$leaguename%'");
-	}
-	public function getAllLeagues()
-	{
-		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true ORDER BY league.league_id");
-	}**/
-	
-	function collect_errors($team,$teamname)
+	function collect_errors(Team $team, $teamname)
 	{
 		$errors=array();
-		if(!($team->teamnameIsUnchanged($teamname)))
+		if(!($this->teamnameIsUnchanged($team, $teamname)))
 		{
-			if($team->teamnameExistWithinTheLeague())
+			if($this->teamnameExistWithinTheLeague($team->getLeague_id(),$team->getTeamname()))
 			{
-				$error= "team name already exist within the given league";
+				$error= "Team name already exist within the given league";
 				array_push($errors,$error);
 			}
 		}
 		
-		if($team->blankfield($team->getTeamname()))
+		if($this->blankfield($team->getTeamname()))
 		{
 			$error= "The Teamname field is required";
 			array_push($errors,$error);
 		}
 		
-		if($team->blankfield($team->getCoachLastname()))
+		if($this->blankfield($team->getCoachLastname()))
 		{
 			$error= "The Lastname field is required";
 			array_push($errors,$error);
 		}
 		
-		if($team->blankfield($team->getCoachFirstname()))
+		if($this->blankfield($team->getCoachFirstname()))
 		{
 			$error= "The Firstname field is required";
 			array_push($errors,$error);
 		}
 		
-		if($team->invalidPhoneNumberSyntax())
+		if($this->invalidPhoneNumberSyntax($team->getCoachPhonenumber()))
 		{
 			$error= "The Phone number field is invalid";
 			array_push($errors,$error);
 		}
 		
-		if($team->leaugeIdNotFound())
+		if($this->leaugeIdNotFound($team->getLeague_id()))
 		{
 			$error= "league id not found";
 			array_push($errors,$error);
 		}
 		return $errors;
 	}
-}
+	
+	public function blankfield($anyField)
+	{
+		if(trim($anyField)=="")
+			return TRUE;
+		else
+			return FALSE;
+	}
+		
+	public function invalidPhoneNumberSyntax($coachPhonenumber)
+	{
+		if(preg_match("/^09[0-9]{9}$/",$coachPhonenumber))
+			return false;
+		else
+			return true;
+	}
+	
+	public function teamNameExistWithinTheLeague($league_id, $teamname)
+	{
+		$teamname=strtolower($teamname);
+		$result=$this->db->query("SELECT * FROM team where teamname='$teamname' AND league_id= $league_id AND accessible='true'");
+		if($result->num_rows()>0)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	public function leaugeIdNotFound($league_id)	
+	{
+		$result=$this->leagueList->getLeagueById($league_id);
+		if($result->num_rows()>0)
+			return FALSE;
+		else
+			return TRUE;
+	}
+	
+	public function teamnameIsUnchanged($team, $teamname)
+	{
+		if((strtolower($team->getTeamname())==strtolower($teamname)))
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	public function getTeamById($id)
+	{
+		return $this->db->query("SELECT * FROM team WHERE team_id = '$id' AND accessible=true");
+	}
+	
+	public function getAllTeamsByLeague_id($league_id)
+	{
+		$result= $this->db->query("SELECT * FROM team WHERE league_id= '$league_id' AND accessible= true ORDER by team_id");
+	}
+	
+}?>
