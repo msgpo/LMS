@@ -8,6 +8,7 @@ class TeamController extends CI_Controller
 		$this->load->helper('url');
 		$this->load->model('authentication','',TRUE);
 		$this->load->model('teamList','',TRUE);
+		$this->load->model('leagueList','',TRUE);
 	}
 	
 	public function index()

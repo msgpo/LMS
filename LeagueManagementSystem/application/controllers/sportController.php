@@ -17,20 +17,27 @@ class SportController extends CI_Controller
 	
 	function sportlist()
 	{
+		$sports_qry = $this->sportList->getSportList();
+		$data['headline'] = "Sport Listing";
+		$data['sports_query'] = $sports_qry;
+		$data['masthead'] = 'sport/sport_masthead';
 		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$sports_qry = $this->sportList->getSportList();
+			// League Manager View
 			$data['title'] = "Donut Fortress League Management System: Sport Module";
-			$data['headline'] = "Sport Listing";
 			$data['include'] = 'sport/sport_index';
-			$data['sports_query'] = $sports_qry;
-			$data['masthead'] = 'sport/sport_masthead';
 			$data['nav'] = 'sport/sport_navigation';
 			$data['sidebar'] = 'sport/sport_sidebar';
-			$this->load->view('template', $data);
 		}
 		else
-			redirect('login');
+		{
+			// Guest View
+			$data['title'] = "Donut Fortress League Management System: Sport List";
+			$data['include'] = 'sport/sport_index_guest';
+			$data['nav'] = 'sport/sport_navigation_guest';
+			$data['sidebar'] = 'sport/sport_sidebar_guest';
+		}
+		$this->load->view('template', $data);
 	}
 	
 	function addSport()

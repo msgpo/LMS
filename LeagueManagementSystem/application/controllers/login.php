@@ -12,7 +12,14 @@ class Login extends CI_Controller
 	function index()
 	{
 		$data['message']=null;
-		$this->load->view('login',$data);
+		$data['title'] = "Donut Fortress League Management System";
+		$data['headline'] = "Welcome.";
+		$data['include'] = 'login';
+		$data['nav'] = 'login/login_navigation';
+		$data['masthead'] = 'login/login_masthead';
+		$data['sidebar'] = 'login/login_sidebar';
+		$this->load->view('template', $data);
+		// $this->load->view('login',$data);
 	}
 	function logging_in()
 	{
@@ -27,7 +34,14 @@ class Login extends CI_Controller
 		else
 		{
 			$data['message']=$result;
-			$this->load->view('login',$data);
+			//$this->load->view('login',$data);
+			$data['title'] = "Donut Fortress League Management System";
+		$data['headline'] = "Welcome.";
+		$data['include'] = 'login';
+		$data['nav'] = 'login/login_navigation';
+		$data['masthead'] = 'login/login_masthead';
+		$data['sidebar'] = 'login/login_sidebar';
+		$this->load->view('template', $data);
 		}
 	}
 	

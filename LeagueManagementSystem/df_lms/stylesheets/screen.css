@@ -69,7 +69,7 @@ part of the main wrap.
 Slightly darker borders (compared to page backgrounds)
 gives nice contrast for the eye.
 */
-#wrap {
+#container {
 	margin: 0 auto;
 	width: 800px;
 	background: #eee;

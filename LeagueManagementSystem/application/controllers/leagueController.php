@@ -43,6 +43,7 @@ class LeagueController extends CI_Controller
 		{
 			$leagueID = $this->uri->segment(3);
 			$leagueDetails = $this->leagueList->getLeagueById($leagueID);
+			$data['teamLists']=$this->teamList->getAllTeamsByLeague_id($leagueID);
 			$data['leagueDetails'] = $leagueDetails;
 			$data['league_id']=$leagueID;
 			$data['title'] = "Donut Fortress League Management System: League Module";
