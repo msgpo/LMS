@@ -29,5 +29,23 @@ class Home extends CI_Controller
 				redirect('login');
 			}
 		}
+		
+		function editPassword()
+		{
+			if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+			{
+				$data['title'] = "Donut Fortress League Management System: League Manager Panel";
+				$data['headline'] = "Edit Your Password";
+				$data['include'] = 'home/home_editpass';
+				$data['nav'] = 'home/home_navigation';
+				$data['masthead'] = 'home/home_masthead';
+				$data['sidebar'] = 'home/home_sidebar';
+				$this->load->view('template', $data);
+			}
+			else
+			{
+				redirect('login');
+			}
+		}
 }
 ?>

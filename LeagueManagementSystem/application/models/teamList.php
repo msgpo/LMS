@@ -117,7 +117,39 @@ class TeamList extends CI_Model
 	
 	public function getAllTeamsByLeague_id($league_id)
 	{
-		$result= $this->db->query("SELECT * FROM team WHERE league_id= '$league_id' AND accessible= true ORDER by team_id");
+		return $this->db->query("SELECT * FROM team WHERE league_id= '$league_id' AND accessible= true ORDER by team_id");
 	}
 	
+	// placeholder
+	public function getAllTeams()
+	{
+		// At the time this function is written, the Teams table does not contain the column "accessible."
+		return $this->db->query("SELECT * FROM team");
+	}
+	
+	public function getTeamsByLeague($league_id)
+	{
+		return $this->db->query("SELECT * FROM team WHERE league_id = '$league_id'");
+	}
+	
+	// for dropdown
+	public function getRanklessTeamsOfLeague($league_id)
+	{
+		return $this->db->query("SELECT * FROM team WHERE league_id = '$league_id' AND rank IS NULL");
+	}
+	
+	public function getTeamRank($rank, $league_id)
+	{
+		return $this->db->query("SELECT * FROM team WHERE rank = $rank AND league_id = $league_id");
+	}
+	
+	public function setTeamRank($rank, $league_id, $team_id)
+	{
+		$this->db->query("UPDATE team SET rank = $rank WHERE team_id = '$team_id' AND league_id = '$league_id'");
+	}
+	
+	public function setNullRank($league_id, $team_id)
+	{
+		$this->db->query("UPDATE team SET rank = null WHERE team_id = '$team_id' AND league_id = '$league_id'");
+	}
 }?>
