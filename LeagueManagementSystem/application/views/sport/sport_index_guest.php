@@ -17,6 +17,8 @@
 
 		?>
 </table>
+<p><?php echo $links; ?></p>
+<p>Page rendered in {elapsed_time} seconds.</p>
  <style type="text/css">
 	p1{
 		color:red;
