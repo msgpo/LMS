@@ -8,6 +8,7 @@ class SportController extends CI_Controller
 		$this->load->helper('url');
 		$this->load->model('authentication','',TRUE);
 		$this->load->model('sportList','',TRUE);
+		$this->load->library('pagination');
 	}
 	
 	function index()
@@ -17,10 +18,22 @@ class SportController extends CI_Controller
 	
 	function sportlist()
 	{
-		$sports_qry = $this->sportList->getSportList();
+		$config = array();
+		$config["base_url"] = base_url() . "index.php/sportController/sportlist";
+		$config["total_rows"] = $this->sportList->countAllAvailableSports()->row()->record_count;
+		$config["per_page"] = 5;
+		$config["uri_segment"] = 3;
+		
+		$this->pagination->initialize($config);
+		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		
+		// $sports_qry = $this->sportList->getSportList();
+		$sports_qry = $this->sportList->getSportListWithLimit($config["per_page"], $page);
 		$data['headline'] = "Sport Listing";
 		$data['sports_query'] = $sports_qry;
 		$data['masthead'] = 'sport/sport_masthead';
+		$data['links'] = $this->pagination->create_links();
+		
 		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			// League Manager View

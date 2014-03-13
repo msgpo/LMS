@@ -87,5 +87,16 @@ class SportList extends CI_Model
 	{
 		return $this->db->query("SELECT * FROM sport where sport_id=$id AND accessible='true'");
 	}
+	
+	// Pagination
+	function countAllAvailableSports()
+	{
+		return $this->db->query("SELECT COUNT(*) AS record_count FROM sport WHERE accessible = 'true'");
+	}
+	
+	function getSportListWithLimit($limit, $start)
+	{
+		return $this->db->query("SELECT * FROM sport WHERE accessible = 'true' ORDER BY sportname LIMIT $limit OFFSET $start");
+	}
 }
 ?>

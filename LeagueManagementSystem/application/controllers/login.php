@@ -11,15 +11,22 @@ class Login extends CI_Controller
 
 	function index()
 	{
-		$data['message']=null;
-		$data['title'] = "Donut Fortress League Management System";
-		$data['headline'] = "Welcome.";
-		$data['include'] = 'login';
-		$data['nav'] = 'login/login_navigation';
-		$data['masthead'] = 'login/login_masthead';
-		$data['sidebar'] = 'login/login_sidebar';
-		$this->load->view('template', $data);
+		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		{
+			redirect('home');
+		}
+		else
+		{
+			$data['message']=null;
+			$data['title'] = "Donut Fortress League Management System";
+			$data['headline'] = "Welcome.";
+			$data['include'] = 'login';
+			$data['nav'] = 'login/login_navigation';
+			$data['masthead'] = 'login/login_masthead';
+			$data['sidebar'] = 'login/login_sidebar';
+			$this->load->view('template', $data);
 		// $this->load->view('login',$data);
+		}
 	}
 	function logging_in()
 	{
