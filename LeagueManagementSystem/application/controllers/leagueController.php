@@ -84,12 +84,14 @@ class LeagueController extends CI_Controller
 			$league= new League($_POST['leaguename'], $_POST['sport_id'], $_POST['tournamenttype'], $_POST['registrationdeadline']);
 			$result=$this->leagueList->createLeague($league);
 			if($result==1)
-				redirect('leagueController/index');
+			//	redirect('leagueController/index');
+				echo 1;
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('leagueController/generateLeague');
+				echo $errors;
+			//	redirect('leagueController/generateLeague');
 			}
 		}
 		else
@@ -148,6 +150,28 @@ class LeagueController extends CI_Controller
 			$result= $this->leagueList->deactivateLeague($leagueID);
 			if($result==1)
 				redirect('leagueController/index');
+		}
+		else
+			redirect('login');
+	}
+	
+	function viewTournament()
+	{
+		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		{
+			$leagueID = $this->uri->segment(3);
+		//	$numteamsQuery = $this->teamList->countTeamsByLeague($leagueID);
+			$matchQuery = $this->leagueList->getMatch($leagueID);
+			$data['leagueID'] = $leagueID;
+			$data['matchQuery'] = $matchQuery;
+			$data['title'] = "Donut Fortress League Management System: League Module";
+			$data['headline'] = "Current Bracket";
+			$data['include'] = 'league/league_viewBracket';
+			$data['masthead'] = 'league/league_masthead';
+			$data['nav'] = 'league/league_navigation';
+			$data['sidebar'] = 'league/league_sidebar';
+			$this->load->view('template', $data);
+			$this->session->unset_userdata('err');
 		}
 		else
 			redirect('login');

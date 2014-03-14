@@ -18,9 +18,9 @@ class SportList extends CI_Model
 	function invalidAddOrUpdateSport(Sport $sport)
 	{
 		if($this->sportnameExist($sport))
-			return "The Sportname already exist";
+			return "The sport already exists.";
 		else if ($this->sportnameIsBlank($sport))
-			return "The Sportname field is required";
+			return "Please provide a sport name.";
 	}
 	
 	function insert(Sport $sport)

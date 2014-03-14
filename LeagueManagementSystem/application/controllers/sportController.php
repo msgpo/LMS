@@ -77,12 +77,16 @@ class SportController extends CI_Controller
 			$sport=new Sport($_POST['sportname']);
 			$result=$this->sportList->addSport($sport);
 			if($result==1)
-				redirect('sportController/sportlist');
+			{
+			//	redirect('sportController/sportlist');
+				echo $result;
+			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('sportController/addSport');
+			//	redirect('sportController/addSport');
+				echo $errors['err'];
 			}
 		}
 		else

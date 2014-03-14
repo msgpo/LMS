@@ -132,6 +132,12 @@ class TeamList extends CI_Model
 		return $this->db->query("SELECT * FROM team WHERE league_id = '$league_id'");
 	}
 	
+	// for counting number of teams
+	public function countTeamsByLeague($league_id)
+	{
+		return $this->db->query("SELECT COUNT(*) AS num_teams FROM team WHERE league_id = $league_id");
+	}
+	
 	// for dropdown
 	public function getRanklessTeamsOfLeague($league_id)
 	{
@@ -151,5 +157,10 @@ class TeamList extends CI_Model
 	public function setNullRank($league_id, $team_id)
 	{
 		$this->db->query("UPDATE team SET rank = null WHERE team_id = '$team_id' AND league_id = '$league_id'");
+	}
+	
+	public function getTeamName($id)
+	{
+		return $this->db->query("SELECT teamname FROM team WHERE team_id = '$id' LIMIT 1");
 	}
 }?>
