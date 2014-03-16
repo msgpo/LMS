@@ -3,10 +3,15 @@
 		color:red;
     }
 </style>
+<?php
+	$notification=$this->session->userdata('notification');
+	echo '<p1>'.$notification.'<br></p1>';
+	$this->session->unset_userdata('notification');
+?>
 <form action="<?php echo base_url()?>index.php/leagueController/index" method="post" accept-charset="utf-8">
 <p> Search for a League: <input type="text" name="leaguename" value="">
-<input type="submit" name="" value="Search"></form></p>
-<table>
+<button type="submit" class="btn btn-primary">Search</button></form></p>
+<table class="table table-hover">
 <tr>
 	<th>League Name</th>
 	<th>Sport</th>
@@ -27,3 +32,4 @@ foreach ($leagues_query->result() as $league)
 }
 ?>
 </table>
+

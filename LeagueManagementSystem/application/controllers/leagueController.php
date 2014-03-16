@@ -8,7 +8,7 @@ class LeagueController extends CI_Controller
 		// load helpers
 		$this->load->helper('url');
 		$this->load->library('table');
-		$this->load->model('authentication','',TRUE);
+		$this->load->model('credentialModel','',TRUE);
 		$this->load->model('leagueList','',TRUE);
 		// sportList model included in order to generate a drop-down list of sports in the create league function
 		$this->load->model('sportList','',TRUE);
@@ -18,13 +18,15 @@ class LeagueController extends CI_Controller
 	
 	public function index()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			if (isset($_POST['leaguename']))
 				$leagues_qry = $this->leagueList->searchLeague(strtolower($_POST['leaguename']));
 			else
 				$leagues_qry = $this->leagueList->getAllLeagues();
 			$data['leagues_query'] = $leagues_qry;
+			$sportList = $this->sportList->getSportList();
+			$data['sportList'] = $sportList;
 			$data['title'] = "Donut Fortress League Management System: League Module";
 			$data['headline'] = "League Listing";
 			$data['include'] = 'league/league_index';
@@ -39,13 +41,15 @@ class LeagueController extends CI_Controller
 	
 	function viewLeagueInfo()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$leagueID = $this->uri->segment(3);
 			$leagueDetails = $this->leagueList->getLeagueById($leagueID);
-			$data['teamLists']=$this->teamList->getAllTeamsByLeague_id($leagueID);
 			$data['leagueDetails'] = $leagueDetails;
+			$data['teamLists']=$this->teamList->getAllTeamsByLeague_id($leagueID);
 			$data['league_id']=$leagueID;
+			$sportList = $this->sportList->getSportList();
+			$data['sportList'] = $sportList;
 			$data['title'] = "Donut Fortress League Management System: League Module";
 			$data['headline'] = "League Information";
 			$data['include'] = 'league/league_info';
@@ -61,7 +65,7 @@ class LeagueController extends CI_Controller
 	
 	function generateLeague()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$sportList = $this->sportList->getSportList();
 			$data['sportList'] = $sportList;
@@ -79,19 +83,23 @@ class LeagueController extends CI_Controller
 	}
 	function create()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$league= new League($_POST['leaguename'], $_POST['sport_id'], $_POST['tournamenttype'], $_POST['registrationdeadline']);
 			$result=$this->leagueList->createLeague($league);
 			if($result==1)
-			//	redirect('leagueController/index');
-				echo 1;
+			{
+				$notif=array('notification'=> "A new League has succesfully created");
+				$this->session->set_userdata($notif);
+				echo $result;
+				//redirect('leagueController/index');
+			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
 				echo $errors;
-			//	redirect('leagueController/generateLeague');
+				//redirect('leagueController/generateLeague');
 			}
 		}
 		else
@@ -100,11 +108,15 @@ class LeagueController extends CI_Controller
 	
 	function editLeague()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$leagueID = $this->uri->segment(3);
 			if($this->leagueList->isStarted($leagueID))
+			{
+				$notif=array('notification'=> "The league cannot be edited. The league has already started");
+				$this->session->set_userdata($notif);
 				redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+			}
 			else
 			{
 				$data['row']=$this->leagueList->getLeagueById($leagueID)->result();
@@ -116,6 +128,7 @@ class LeagueController extends CI_Controller
 				$data['masthead'] = 'league/league_masthead';
 				$data['nav'] = 'league/league_navigation';
 				$data['sidebar'] = 'league/league_sidebar';
+				$data['league_id']=$leagueID;
 				$this->load->view('template', $data);
 				$this->session->unset_userdata('err');
 			}
@@ -126,116 +139,40 @@ class LeagueController extends CI_Controller
 
 	function update()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$leagueID = $_POST['league_id'];
 			$league=$league= new League($_POST['leaguename'], $_POST['sport_id'], $_POST['tournamenttype'], $_POST['registrationdeadline']);
 			$result=$this->leagueList->editLeague($leagueID,$league);
 			if($result==1)
-				redirect('leagueController/index');
+			{
+				$notif=array('notification'=> "The League Details has succesfully updated");
+				$this->session->set_userdata($notif);
+				echo $result;
+				// redirect('leagueController/viewLeagueInfo/'.$leagueID);
+			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('leagueController/editLeague/'.$leagueID.'/');
+				echo $errors;
+				// redirect('leagueController/editLeague/'.$leagueID.'/');
 			}
 		}
 	}
 	
 	function deactivateLeague()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$leagueID = $this->uri->segment(3);
 			$result= $this->leagueList->deactivateLeague($leagueID);
 			if($result==1)
+			{
+				$notif=array('notification'=> "A League has succesfully deactivated");
+				$this->session->set_userdata($notif);
 				redirect('leagueController/index');
-		}
-		else
-			redirect('login');
-	}
-	
-	function viewTournament()
-	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
-		{
-			$leagueID = $this->uri->segment(3);
-		//	$numteamsQuery = $this->teamList->countTeamsByLeague($leagueID);
-			$matchQuery = $this->leagueList->getMatch($leagueID);
-			$data['leagueID'] = $leagueID;
-			$data['matchQuery'] = $matchQuery;
-			$data['title'] = "Donut Fortress League Management System: League Module";
-			$data['headline'] = "Current Bracket";
-			$data['include'] = 'league/league_viewBracket';
-			$data['masthead'] = 'league/league_masthead';
-			$data['nav'] = 'league/league_navigation';
-			$data['sidebar'] = 'league/league_sidebar';
-			$this->load->view('template', $data);
-			$this->session->unset_userdata('err');
-		}
-		else
-			redirect('login');
-	}
-
-	function startRanking()
-	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
-		{
-			$leagueID = $this->uri->segment(3);
-			$data['league_id']=$leagueID;
-			$data['teamLists']=$this->teamList->getAllTeamsByLeague_id($leagueID);
-			$data['title'] = "Donut Fortress League Management System: League Module";
-			$data['headline'] = "Team Ranking";
-			$data['include'] = 'league/team_rank';
-			$data['masthead'] = 'league/league_masthead';
-			$data['nav'] = 'league/league_navigation';
-			$data['sidebar'] = 'league/league_sidebar';
-			$this->load->view('template', $data);
-		}
-		else
-			redirect('login');
-			
-	} 
-
-	function setRank()
-	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
-		{
-			// URI: index.php/leagueController/setRank/<league ID>/<rank>
-			$rank = $this->uri->segment(4);
-			$leagueID = $this->uri->segment(3);
-			$data['rank'] = $rank;
-			$data['league_id']=$leagueID;
-		//	$data['teamLists']=$this->teamList->getAllTeamsByLeague_id($leagueID);
-			$data['title'] = "Donut Fortress League Management System: League Module";
-			$data['headline'] = "Team Ranking";
-			$data['include'] = 'league/league_setrank';
-			$data['masthead'] = 'league/league_masthead';
-			$data['nav'] = 'league/league_navigation';
-			$data['sidebar'] = 'league/league_sidebar';
-			$this->load->view('template', $data);
-		}
-		else
-			redirect('login');
-	}
-
-	function setRankHelper()
-	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
-		{
-			$this->teamList->setTeamRank($_POST['rank'], $_POST['league_id'], $_POST['team_id']);
-			redirect('leagueController/startRanking/' . $_POST['league_id']);
-		}
-		else
-			redirect('login');
-	}
-	
-	function unassignHelper()
-	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
-		{
-			$this->teamList->setNullRank($_POST['league_id'], $_POST['team_id']);
-			redirect('leagueController/startRanking/' . $_POST['league_id']);
+			}
 		}
 		else
 			redirect('login');

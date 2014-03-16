@@ -22,6 +22,46 @@ class TeamList extends CI_Model
 		return 1;
 	}
 	
+	public function editTeam($team_id, Team $new_team)
+	{
+		if($this->getTeamById($team_id)->num_rows()>0)
+		{
+			$result=$this->getTeamById($team_id)->result();
+			$errors=$this->collect_errors($new_team, $result[0]->teamname);
+			if(count($errors)>0)
+				return $errors;
+			else
+			{	
+				$result=$this->update($team_id,$new_team);
+				if($result==1)
+					return $result;
+				array_push($errors,$result);
+				return $errors;
+			}
+		}
+		else
+		{
+			$errors=array();
+			array_push($errors,"League id not found");
+			return $errors;
+		}
+	}
+	public function update($team_id, Team $team)
+	{
+		$teamname=(strtolower($team->getTeamname())); 
+		$league_id=$team->getLeague_id(); 
+		$coachlastname=(strtolower($team->getCoachLastname())); 
+		$coachfirstname=strtolower($team->getCoachFirstname()); 
+		$coachphonenumber=strtolower($team->getCoachPhonenumber());  
+		$teamdesc=strtolower($team->getTeamDesc());
+		$this->db->query("UPDATE team set teamname='$teamname',league_id='$league_id',coachlastname='$coachlastname',coachfirstname='$coachfirstname', coachphonenumber='$coachphonenumber', teamdesc='$teamdesc' where team_id=$team_id AND accessible='true'");
+		return 1;
+	}
+	public function removeTeam($team_id)
+	{
+		$this->db->query("UPDATE team SET accessible='false' where team_id=$team_id");
+		return 1;
+	}
 	
 	function collect_errors(Team $team, $teamname)
 	{
@@ -110,6 +150,7 @@ class TeamList extends CI_Model
 			return FALSE;
 	}
 	
+	
 	public function getTeamById($id)
 	{
 		return $this->db->query("SELECT * FROM team WHERE team_id = '$id' AND accessible=true");
@@ -132,12 +173,6 @@ class TeamList extends CI_Model
 		return $this->db->query("SELECT * FROM team WHERE league_id = '$league_id'");
 	}
 	
-	// for counting number of teams
-	public function countTeamsByLeague($league_id)
-	{
-		return $this->db->query("SELECT COUNT(*) AS num_teams FROM team WHERE league_id = $league_id");
-	}
-	
 	// for dropdown
 	public function getRanklessTeamsOfLeague($league_id)
 	{
@@ -146,7 +181,7 @@ class TeamList extends CI_Model
 	
 	public function getTeamRank($rank, $league_id)
 	{
-		return $this->db->query("SELECT * FROM team WHERE rank = $rank AND league_id = $league_id");
+		return $this->db->query("SELECT * FROM team WHERE rank = $rank AND league_id = $league_id AND accessible= true");
 	}
 	
 	public function setTeamRank($rank, $league_id, $team_id)
@@ -157,10 +192,5 @@ class TeamList extends CI_Model
 	public function setNullRank($league_id, $team_id)
 	{
 		$this->db->query("UPDATE team SET rank = null WHERE team_id = '$team_id' AND league_id = '$league_id'");
-	}
-	
-	public function getTeamName($id)
-	{
-		return $this->db->query("SELECT teamname FROM team WHERE team_id = '$id' LIMIT 1");
 	}
 }?>

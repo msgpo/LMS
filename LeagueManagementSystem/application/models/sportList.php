@@ -18,9 +18,9 @@ class SportList extends CI_Model
 	function invalidAddOrUpdateSport(Sport $sport)
 	{
 		if($this->sportnameExist($sport))
-			return "The sport already exists.";
+			return "The Sportname already exist";
 		else if ($this->sportnameIsBlank($sport))
-			return "Please provide a sport name.";
+			return "The Sportname field is required";
 	}
 	
 	function insert(Sport $sport)
@@ -59,11 +59,26 @@ class SportList extends CI_Model
 	{
 		if($this->getSportById($id)->num_rows()>0)
 		{
-			$this->db->query("UPDATE sport SET accessible = 'false' WHERE sport_id = '$id'");
-			return 1;
+			if(!$this->checkIfALeagueReferencesThisSport($id))
+				return $this->updateToInAccessible($id);
+			else
+				return "That sport cannot be removed. There are league(s) that uses that sport";
 		}
 		else
 			return "Sport id not found";
+	}
+	function updateToInAccessible($sport_id)
+	{
+		$this->db->query("UPDATE sport SET accessible = 'false' WHERE sport_id = $sport_id");
+		return 1;
+	}
+	function checkIfALeagueReferencesThisSport($sport_id)
+	{
+		$result= $this->db->query("SELECT * FROM league WHERE sport_id=$sport_id AND accessible = 'true'");
+		if($result->num_rows()>0)
+			return TRUE;
+		else
+			return FALSE;
 	}
 	
 	function sportnameExist($sport)
@@ -87,8 +102,6 @@ class SportList extends CI_Model
 	{
 		return $this->db->query("SELECT * FROM sport where sport_id=$id AND accessible='true'");
 	}
-	
-	// Pagination
 	function countAllAvailableSports()
 	{
 		return $this->db->query("SELECT COUNT(*) AS record_count FROM sport WHERE accessible = 'true'");

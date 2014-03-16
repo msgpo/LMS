@@ -6,14 +6,14 @@ class TeamController extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->helper('url');
-		$this->load->model('authentication','',TRUE);
+		$this->load->model('credentialModel','',TRUE);
 		$this->load->model('teamList','',TRUE);
 		$this->load->model('leagueList','',TRUE);
 	}
 	
 	public function index()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$teamQuery = $this->teamList->getAllTeams();
 			$teamListArray = $teamQuery->result();
@@ -36,10 +36,10 @@ class TeamController extends CI_Controller
 	function addTeam()
 	{	
 		// todo: redirect if no league
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$leagueID = $this->uri->segment(3);
-			$data['leagueID'] = $leagueID;
+			$data['league_id'] = $leagueID;
 			$data['title'] = "Donut Fortress League Management System: Team Module";
 			$data['headline'] = "Add a New Team";
 			$data['include'] = 'team/team_add';
@@ -55,21 +55,81 @@ class TeamController extends CI_Controller
 	
 	function create()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
+			$leagueID = $_POST['league_id'];
 			$newTeam = new Team($_POST['teamname'], $_POST['league_id'], $_POST['coachlastname'], $_POST['coachfirstname'], $_POST['coachphonenumber'], $_POST['teamdesc']);
 			$result=$this->teamList->addTeam($newTeam);
 			if($result==1)
-				redirect('teamController/index');
+			{
+				$notif=array('notification'=> "A new Team has succesfully created");
+				$this->session->set_userdata($notif);
+				redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('teamController/addTeam');
+				redirect('teamController/addTeam/'.$leagueID.'/');
 			}
 		}
 		else
 			redirect('login');
 	}
-	// MORE FUNCTIONS TO DO
+	function editTeam()
+	{
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+		{
+			$data['league_id'] = $this->uri->segment(3);
+			$team_id = $this->uri->segment(4);
+			$data['row']=$this->teamList->getTeamById($team_id)->result();
+			$leagues=$this->leagueList->getAllLeagues();
+			$data['title'] = "Donut Fortress League Management System: Team Module";
+			$data['headline'] = "Edit a  Team";
+			$data['include'] = 'team/team_edit';
+			$data['masthead'] = 'team/team_masthead';
+			$data['nav'] = 'team/team_navigation';
+			$data['sidebar'] = 'team/team_sidebar';
+			$this->load->view('template', $data);
+			$this->session->unset_userdata('err');
+		}
+		else
+			redirect('login');
+	}
+	function update()
+	{
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+		{
+			$team_id=$_POST['team_id'];
+			$leagueID=$_POST['league_id'];
+			$team = new Team($_POST['teamname'], $leagueID, $_POST['coachlastname'], $_POST['coachfirstname'], $_POST['coachphonenumber'], $_POST['teamdesc']);
+			$result=$this->teamList->editTeam($team_id,$team);
+			if($result==1)
+			{
+				$notif=array('notification'=> "A Team has succesfully updated");
+				$this->session->set_userdata($notif);
+				redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+			}
+			else
+			{	
+				$errors=array('err'=> $result);
+				$this->session->set_userdata($errors);
+				redirect('teamController/editTeam/'.$leagueID.'/'.$team_id.'/');
+			}
+		}
+		else
+			redirect('login');
+	}
+	function removeTeam()
+	{
+		$leagueID = $this->uri->segment(3);
+		$team_id = $this->uri->segment(4);
+		$result=$this->teamList->removeTeam($team_id);
+		if($result==1)
+		{
+			$notif=array('notification'=> "A Team has succesfully removed");
+			$this->session->set_userdata($notif);
+			redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+		}
+	}
 }

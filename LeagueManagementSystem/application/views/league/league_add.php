@@ -25,7 +25,7 @@
 </select></p>
 <p>Date (YYYY-MM-DD): <input type="text" name="registrationdeadline" value=""> </p>
 
-<input type="submit" name="" value="Create League"></form>
+<button type="submit" class="btn btn-primary">Create League</button></form>
 <?php
 	$errors=$this->session->userdata('err');
 	if(is_array($errors))

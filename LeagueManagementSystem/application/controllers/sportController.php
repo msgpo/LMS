@@ -6,7 +6,7 @@ class SportController extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->helper('url');
-		$this->load->model('authentication','',TRUE);
+		$this->load->model('credentialModel','',TRUE);
 		$this->load->model('sportList','',TRUE);
 		$this->load->library('pagination');
 	}
@@ -34,12 +34,12 @@ class SportController extends CI_Controller
 		$data['masthead'] = 'sport/sport_masthead';
 		$data['links'] = $this->pagination->create_links();
 		
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			// League Manager View
 			$data['title'] = "Donut Fortress League Management System: Sport Module";
 			$data['include'] = 'sport/sport_index';
-			$data['nav'] = 'sport/sport_navigation';
+			$data['nav'] = 'home/home_navigation';
 			$data['sidebar'] = 'sport/sport_sidebar';
 		}
 		else
@@ -55,13 +55,13 @@ class SportController extends CI_Controller
 	
 	function addSport()
 	{	
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$data['title'] = "Donut Fortress League Management System: Sport Module";
 			$data['headline'] = "Add a New Sport";
 			$data['include'] = 'sport/sport_add';
 			$data['masthead'] = 'sport/sport_masthead';
-			$data['nav'] = 'sport/sport_navigation';
+			$data['nav'] = 'home/home_navigation';
 			$data['sidebar'] = 'sport/sport_sidebar';
 			$this->load->view('template', $data);
 			$this->session->unset_userdata('err');
@@ -72,20 +72,24 @@ class SportController extends CI_Controller
 	
 	function create()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$sport=new Sport($_POST['sportname']);
 			$result=$this->sportList->addSport($sport);
 			if($result==1)
 			{
-			//	redirect('sportController/sportlist');
+				//$notif= "A new Sport has succesfully created";
+				//$notif=array('notification'=> "A new Sport has succesfully created");
+				//$this->session->set_userdata($notif);
+				//echo $notif;
+				$this->session->unset_userdata('err');
 				echo $result;
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-			//	redirect('sportController/addSport');
+				//redirect('sportController/addSport');
 				echo $errors['err'];
 			}
 		}
@@ -96,7 +100,7 @@ class SportController extends CI_Controller
 	
 	function edit()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$id = $this->uri->segment(3);
 			$data['row'] = $this->sportList->getSportById($id)->result();
@@ -104,7 +108,7 @@ class SportController extends CI_Controller
 			$data['headline'] = "Edit Sport Name";
 			$data['include'] = 'sport/sport_edit';
 			$data['masthead'] = 'sport/sport_masthead';
-			$data['nav'] = 'sport/sport_navigation';
+			$data['nav'] = 'home/home_navigation';
 			$data['sidebar'] = 'sport/sport_sidebar';
 			$this->load->view('template', $data);
 			$this->session->unset_userdata('err');
@@ -115,12 +119,16 @@ class SportController extends CI_Controller
 	
 	function update()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$newsport=new Sport($_POST['sportname']);
 			$result=$this->sportList->editSport($_POST['sport_id'], $newsport);
 			if($result==1)
+			{
+				$notif=array('notification'=> "A Sport has succesfully updated");
+				$this->session->set_userdata($notif);
 				redirect('sportController/sportlist');
+			}
 			else
 			{	
 				$errors=array('err'=> $result);
@@ -135,9 +143,19 @@ class SportController extends CI_Controller
 	function remove()
 	{
 		$sport_id = $this->uri->segment(3);
-		$this->sportList->disableSport($sport_id);
+		$result= $this->sportList->disableSport($sport_id);
+		if($result==1)
+			$notif=array('notification'=> "A Sport has succesfully removed");
+		else
+			$notif=array('notification'=> $result);
+		$this->session->set_userdata($notif);
 		redirect('sportController/index');
 	}
 	
+	// New functions for ajax here
+	function getId()
+	{
+		echo print_r($_POST);
+	}
 }
 ?>

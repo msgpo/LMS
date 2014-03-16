@@ -6,32 +6,25 @@ class Login extends CI_Controller
         {
             parent::__construct();
 		//$this->load->model('account','',TRUE);
-		$this->load->model('authentication','',TRUE);
+		$this->load->model('credentialModel','',TRUE);
         }
 
 	function index()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
-		{
-			redirect('home');
-		}
-		else
-		{
-			$data['message']=null;
-			$data['title'] = "Donut Fortress League Management System";
-			$data['headline'] = "Welcome.";
-			$data['include'] = 'login';
-			$data['nav'] = 'login/login_navigation';
-			$data['masthead'] = 'login/login_masthead';
-			$data['sidebar'] = 'login/login_sidebar';
-			$this->load->view('template', $data);
-		// $this->load->view('login',$data);
-		}
+		$data['message']=null;
+		$data['message']=null;
+		$data['title'] = "Donut Fortress League Management System";
+		$data['headline'] = "Welcome.";
+		$data['include'] = 'login/login';
+		$data['nav'] = 'login/login_navigation';
+		$data['masthead'] = 'login/login_masthead';
+		$data['sidebar'] = 'login/login_sidebar';
+		$this->load->view('template', $data);
 	}
 	function logging_in()
 	{
 		$account=new Account($this->input->post("username"),$this->input->post("password"));
-		$result=$this->authentication->login($account);
+		$result=$this->credentialModel->login($account);
 		if($result==null)
 		{
 			$credentials = array('username' => $account->getUsername(), 'password' => $account->getPassword());
@@ -41,14 +34,7 @@ class Login extends CI_Controller
 		else
 		{
 			$data['message']=$result;
-			//$this->load->view('login',$data);
-			$data['title'] = "Donut Fortress League Management System";
-		$data['headline'] = "Welcome.";
-		$data['include'] = 'login';
-		$data['nav'] = 'login/login_navigation';
-		$data['masthead'] = 'login/login_masthead';
-		$data['sidebar'] = 'login/login_sidebar';
-		$this->load->view('template', $data);
+			$this->load->view('login',$data);
 		}
 	}
 	
@@ -56,7 +42,7 @@ class Login extends CI_Controller
 	{
 		$this->session->sess_destroy();
 		$data['message'] = null;
-		redirect('login', $data);
+		redirect('initial', $data);
 	}
 }
 ?>
