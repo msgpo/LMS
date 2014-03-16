@@ -1,11 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title><?php echo $title;?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<link rel="stylesheet" href="<?php echo base_url(); ?>df_lms/stylesheets/screen.css" type="text/css" media="screen" />
-	
+	<script src="<?php echo base_url(); ?>scripts/jquery.min.js"></script>
+	<script src="<?php echo base_url(); ?>scripts/bootstrap.min.js"></script> 
+	<link rel="stylesheet" href="<?php echo base_url(); ?>df_lms/stylesheets/screen.css" media="screen" />
+	<link rel="stylesheet" href="<?php echo base_url(); ?>styles/bootstrap-combined.min.css" media="screen" />
+	<script src="<?php echo base_url(); ?>scripts/jqBootstrapValidation.js"></script>
+	<script>
+		$(function() 
+		{ 
+			$("input,select,textarea").not("[type=submit]").jqBootstrapValidation(); 
+		});
+	</script>
 </head>
 <body>
     <div id="header">
@@ -14,7 +22,7 @@
     <div id="nav">
         <?php $this->load->view($nav); ?>
     </div>
-    <div id="wrap">
+    <div id="container">
 		<?php $this->load->view($masthead); ?>
 	<div id="content">
         <h1><?php echo $headline;?></h1>
@@ -23,25 +31,6 @@
     <div id="sidebar">
 		<h1>Options</h1>
 		<?php
-		/*
-			if ($curController == "home")
-			{
-				echo '<p>Coming soon</p>';
-			}
-			
-			if ($curController == "sportController")
-			{
-				echo '<a href="';
-				echo base_url();
-				$message="";
-				echo 'index.php/sportController/addSport">Add Sport</a>';
-			}
-			
-			if ($curController == "leagueController")
-			{
-				echo '<p>Coming soon</p>';
-			}
-		*/
 		$this->load->view($sidebar);
 		?>
 			
@@ -50,5 +39,7 @@
             <p>Copyright &copy; 2014 Donut Fortress Australia, all rights reserved.</p>
         </div>
     </div>
+	
+	
 </body>
 </html>
