@@ -7,7 +7,7 @@ primary key(username)
 
 CREATE TABLE sport
 (
-  sport_id serial, 
+  sport_id serial UNIQUE, 
   sportname varchar(50),
    primary key(sport_id)
 );
@@ -15,12 +15,13 @@ CREATE TABLE sport
 CREATE TABLE league
 (
  league_id serial UNIQUE,
- sport_id serial,
+ sport_id integer,
  leaguename varchar(50),
  tournamentType varchar(50),
- registrationDeadline date,
- isStarted boolean,
- isEnded boolean,
+ registrationdeadline date,
+ isstarted boolean,
+ isended boolean,
+ accessible boolean DEFAULT TRUE,
  primary key(league_id, sport_id),
  foreign key(sport_id) references sport(sport_id)
 );
@@ -29,8 +30,8 @@ CREATE TABLE league
 
 create table team
 (
- team_id serial,
- league_id serial,
+ team_id serial UNIQUE,
+ league_id integer,
  teamname varchar(50),
  coachlastname varchar(50),
  coachfirstname varchar(50),
@@ -39,3 +40,18 @@ create table team
  primary key(team_id, league_id),
  foreign key (league_id) references league(league_id)
 );
+
+CREATE TABLE match
+(
+	match_id serial,
+	league_id integer,
+	team_a integer,
+	team_b integer,
+	winner integer,
+	loser integer,
+	roundnumber integer,
+	PRIMARY KEY (match_id),
+	FOREIGN KEY (team_a) REFERENCES team(team_id),
+	FOREIGN KEY (team_b) REFERENCES team(team_id)
+)
+
