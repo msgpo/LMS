@@ -1,7 +1,8 @@
 <?php 
 class League
 {
-        private $leaguename;
+    private $league_id;
+	private $leaguename;
 	private $sport_id;
 	private $tournamentType;
 	private $registrationDeadline;

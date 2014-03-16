@@ -178,4 +178,10 @@ class LeagueList extends CI_Model
 	{
 		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true ORDER BY league.league_id");
 	}
+	function setStarted($league_id)
+	{
+		$this->db->query("UPDATE league SET isstarted = true WHERE league_id = $league_id");
+	}
+	
+	
 }?>

@@ -18,6 +18,7 @@ class Team
 			$this->coachPhonenumber=$coachPhonenumber;
 			$this->teamDesc=$teamDesc;
 		}
+		
 		public function getTeamname()
 		{
 			return $this->teamname;
