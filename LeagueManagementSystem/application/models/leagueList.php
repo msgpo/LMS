@@ -172,7 +172,40 @@ class LeagueList extends CI_Model
 	
 	public function searchLeague($leaguename)
 	{
-		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true AND leaguename LIKE '%$leaguename%'");
+		$search_query = "SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true";
+		// Extract the search keywords into an array
+		$clean_search = str_replace(',', ' ', $leaguename);
+		$search_words = explode(' ', $clean_search);
+		$final_search_words = array();
+		if (count($search_words) > 0) 
+		{
+			foreach ($search_words as $word) 
+			{
+				if (!empty($word)) 
+				{
+					$final_search_words[] = $word;
+				}
+			}
+		}
+
+    // Generate an AND clause using all of the search keywords
+    $where_list = array();
+    if (count($final_search_words) > 0) {
+      foreach($final_search_words as $word) {
+        $where_list[] = "league.leaguename LIKE '%$word%'";
+      }
+    }
+    $where_clause = implode(' OR ', $where_list);
+
+    // Add the keyword AND clause to the search query
+    if (!empty($where_clause)) {
+      $search_query .= " AND $where_clause";
+    }
+	
+	return $this->db->query($search_query);
+
+	
+		// return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true AND leaguename LIKE '%$leaguename%'");
 	}
 	public function getAllLeagues()
 	{

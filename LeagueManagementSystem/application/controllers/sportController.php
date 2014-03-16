@@ -155,7 +155,7 @@ class SportController extends CI_Controller
 	// New functions for ajax here
 	function getId()
 	{
-		echo print_r($_POST);
+		echo $_POST['sport_id'];
 	}
 }
 ?>

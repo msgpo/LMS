@@ -98,7 +98,8 @@ class LeagueController extends CI_Controller
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				echo $errors;
+				//echo $errors;
+				echo implode('<br />', $errors['err']);
 				//redirect('leagueController/generateLeague');
 			}
 		}
@@ -148,15 +149,15 @@ class LeagueController extends CI_Controller
 			{
 				$notif=array('notification'=> "The League Details has succesfully updated");
 				$this->session->set_userdata($notif);
-				echo $result;
-				// redirect('leagueController/viewLeagueInfo/'.$leagueID);
+				//echo $result;
+				redirect('leagueController/viewLeagueInfo/'.$leagueID);
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				echo $errors;
-				// redirect('leagueController/editLeague/'.$leagueID.'/');
+				//echo $errors;
+				redirect('leagueController/editLeague/'.$leagueID.'/');
 			}
 		}
 	}

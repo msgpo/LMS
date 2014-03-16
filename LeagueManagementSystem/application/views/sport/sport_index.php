@@ -10,16 +10,80 @@
 			echo '<tr>';
 			echo '<td>' . ucwords($sport->sportname) . '</td>';
 		//	echo '<td><a class="btn btn-info btn-lg" href="' . base_url() . 'index.php/sportController/edit/' . $sport->sport_id . '">Edit</a>';
-		echo '<td><a class="btn btn-info btn-lg" id="editSport" sname="'. $sport->sport_id . '" href="#">Edit</a>';
-		//	echo ' | ';
+		echo '<td><a class="btn btn-info btn-lg" id="editSport'.$sport->sport_id.'" data-sport-id="'. $sport->sport_id . '" href="#">Edit</a>';
 			echo '<a class="btn btn-danger btn-lg" href="' . base_url() . 'index.php/sportController/remove/' . $sport->sport_id . '" onclick="return confirm(\'Remove this sport?\')">Remove</a>';			
 			echo '</td>';
-			echo '</tr>';
-		}
+			
+
 
 		?>
-</table>
+<!--</table>-->
 
+<script>
+$(document).ready(function()
+{
+	//Add Sport
+	$("button#submitadd").click(function()
+	{
+		$.ajax(
+		{
+			type: "POST",
+			url: "<?php echo base_url(); ?>index.php/sportController/create/",
+			data: $('form.contact').serialize(),
+			success: function(msg){
+			if (msg == 1)
+			{
+				$("div#tooltip").removeClass().addClass("alert alert-success");
+				$("div#tooltip").html('<strong>SUCCESS: </strong>Sport added.');
+				// $("#form-content").setTimeout(5000).modal('hide');
+				// $("#form-content").setTimeout(hideModal(), 5000);
+				$("#form-content").modal('hide');
+				location.reload();
+			}
+			else
+			{
+				// alert(msg);
+				if(!($("div#tooltip").hasClass("alert alert-danger")))
+				{
+					$("div#tooltip").removeClass().addClass("alert alert-danger");
+				}
+				
+				$("div#tooltip").html('<strong>WARNING: </strong>' + msg);
+			}
+			},
+			error: function(){
+				alert("failure");
+			}
+		});
+	});
+	
+	// Edit/Remove goes here
+
+	$("#editSport<?php echo $sport->sport_id; ?>").click(function()
+	{
+		// alert($("a#editSport").data("sname"));
+	
+		$.ajax(
+		{
+			type: "POST",
+			url: "<?php echo base_url(); ?>index.php/sportController/getId/",
+			data: {sport_id: $("#editSport<?php echo $sport->sport_id; ?>").data('sport-id')},
+			success: function(msg){
+				alert(msg);
+			},
+			error: function(){
+				alert("failure");
+			}
+		});
+	});
+	
+});
+</script> 
+<?php
+	echo '</tr>';
+		}
+	echo '</table>';
+?>
 <!-- Button trigger modal -->
 <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addSport">
   Add New Sport
@@ -53,70 +117,7 @@
   </div>
 </div>
 
-<script>
-$(document).ready(function()
-{
-	function hideModal()
-	{
-		$("#form-content").modal('hide');
-		location.reload();
-	}
 
-	//Add Sport
-	$("button#submitadd").click(function()
-	{
-		$.ajax(
-		{
-			type: "POST",
-			url: "<?php echo base_url(); ?>index.php/sportController/create/",
-			data: $('form.contact').serialize(),
-			success: function(msg){
-			if (msg == 1)
-			{
-				$("div#tooltip").removeClass().addClass("alert alert-success");
-				$("div#tooltip").html('<strong>SUCCESS: </strong>Sport added.');
-				// $("#form-content").setTimeout(5000).modal('hide');
-				$("#form-content").setTimeout(hideModal(), 5000);
-			}
-			else
-			{
-				// alert(msg);
-				if(!($("div#tooltip").hasClass("alert alert-danger")))
-				{
-					$("div#tooltip").removeClass().addClass("alert alert-danger");
-				}
-				
-				$("div#tooltip").html('<strong>WARNING: </strong>' + msg);
-			}
-			},
-			error: function(){
-				alert("failure");
-			}
-		});
-	});
-	
-	// Edit/Remove goes here
-
-	$("a#editSport").click(function()
-	{
-		alert($("a#editSport").attr("sname"));
-	
-		$.ajax(
-		{
-			type: "POST",
-			url: "<?php echo base_url(); ?>index.php/sportController/getId/",
-			data: $("a#editSport").attr("sname"),
-			success: function(msg){
-				//alert(msg);
-			},
-			error: function(){
-				alert("failure");
-			}
-		});
-	});
-	
-});
-</script> 
 
 <p><?php echo $links; ?></p>
 <p>Page rendered in {elapsed_time} seconds.</p>

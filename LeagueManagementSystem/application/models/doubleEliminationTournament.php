@@ -1,7 +1,7 @@
 <?php 
 include_once(APPPATH .'models/match.php');
 include_once(APPPATH .'models/tournament.php');
-class SingleEliminationTournament extends Tournament
+class DoubleEliminationTournament extends Tournament
 {
 	public function __construct($team_ids)
 	{

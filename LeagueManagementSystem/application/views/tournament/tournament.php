@@ -71,11 +71,106 @@
 			echo '<tr><td>To be determined</td><td> VS </td><td>To be determined</td>';
 		echo '<td>'.$match->roundnumber.'</td>';
 		if (($teamAName && $teamBName) && !$match->winner)
-			echo '<td><a class="btn btn-info btn-lg" href="' . base_url() . 'index.php/tournamentController/setMatch/'.$league_id.'/' . $match->match_id . '">Set Winner</a></td>';
+		//	echo '<td><a class="btn btn-info btn-lg" href="' . base_url() . 'index.php/tournamentController/setMatch/'.$league_id.'/' . $match->match_id . '">Set Winner</a></td>';
+			// id="setWinner-<League ID>-<Match ID>"
+		//	echo '<td><button class="btn btn-info btn-lg" id="editSport'.$match->league_id.'-'.$match->match_id.'" data-league-id="'. $match->league_id.'" data-match-id="'. $match->match_id . '">Set Winner</button></td>';
+		echo '<td><button class="btn btn-info btn-lg" id="setWinnerModal" data-toggle="modal" data-target="#setWinner'.$match->league_id.'-'.$match->match_id.'">Set Winner</button></td>';
 		else
 		//echo '<td><a class="btn btn-danger btn-lg" href="#">Cannot set match</a></td>';
 			echo '<td></td>';
 		echo '</tr>';	
+?>
+
+<script>
+// Edit/Remove goes here
+$(document).ready(function()
+{
+/*
+	$("#editSport<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").click(function()
+	{
+		$.ajax(
+		{
+			type: "POST",
+			url: "<?php echo base_url(); ?>index.php/tournamentController/displayID/",
+			data: {
+				league_id: $("#editSport<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").data('league-id'),
+				match_id: $("#editSport<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").data('match-id'),
+				},
+			success: function(msg){
+				// alert(msg);
+				
+			},
+			error: function(){
+				alert("failure");
+			}
+		});
+	}); */
+	
+	//Set Winner
+	$("button#submitWinner").click(function()
+	{
+		$.ajax(
+		{
+			type: "POST",
+			url: "<?php echo base_url(); ?>index.php/tournamentController/updateMatch/",
+		//	data: $('form.setwinner').serialize(),
+			data:
+				{
+					league_id: $("input#league").val(),
+					match_id: $("input#match").val(),
+					winner: $("select#desiredWinner").val()
+				},
+			success: function(msg){
+				if (msg == 1)
+				{
+					alert(msg);
+					$("#form-content").modal('hide');
+					//	location.reload();
+				}
+				else
+				{
+					$("#form-content").modal('hide');
+				}
+				return;
+			},
+			error: function(){
+				alert("failure");
+			}
+		//	return false;
+		});
+	});
+});
+</script>
+
+<!-- Modals -->
+<div class="modal fade" id="setWinner<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Set The Winner</h4>
+      </div>
+      <div class="modal-body">
+		<form class="setwinner">
+			<input type="hidden" id="league" name="league_id" value="<?php echo $match->league_id; ?>" />
+			<input type="hidden" id="match" name="match_id" value="<?php echo $match->match_id; ?>" /> 
+			<select name="winner" id="desiredWinner">
+				<option value="<?php echo $match->team_a; ?>"><?php echo ucwords($teamAName); ?></option>
+				<option value="<?php echo $match->team_b; ?>"><?php echo ucwords($teamBName); ?></option>
+			</select>
+		</form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="submitWinner">Set Winner</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	  </div>
+    </div>
+  </div>
+</div>
+
+
+<?php
 	}
 	echo '</table>';
 ?>

@@ -84,7 +84,7 @@ class TournamentInitializer  extends CI_Model
 		$this->updateWinner($winnerTeam, $loserTeam, $matchID);
 		$nextRound=($matchDetails->row()->roundnumber)+1;
 		$maxRound=$this->getNumberOfRounds($leagueID)->row()->maxround;
-		if($nextRound<=$maxRound)
+		if($nextRound<=$maxRound) // originally <=
 		{
 			$nextMatch=$this->nullTeamChecker($leagueID,$nextRound)->row();
 			if (!isset($nextMatch->team_a))

@@ -25,7 +25,8 @@ $(document).ready(function()
 					$("div#tooltip").removeClass().addClass("alert alert-success");
 					$("div#tooltip").html('<strong>SUCCESS: </strong>League successfully created.');
 					// $("#form-content").setTimeout(5000).modal('hide');
-					$("#form-content").setTimeout(hideModal(), 5000);
+					//$("#form-content").setTimeout(hideModal(), 5000);
+					hideModal();
 				}
 				else
 				{

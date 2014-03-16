@@ -87,13 +87,19 @@ class TournamentController extends CI_Controller
 	{
 		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$leagueID = $this->uri->segment(3);
+			$winner = $_POST['winner'];
+			$matchID = $_POST['match_id'];
+			$leagueID = $_POST['league_id'];
+		/*	$leagueID = $this->uri->segment(3);
 			$matchID = $this->uri->segment(4);
 			$result=$this->tournamentInitializer->updateMatchListing($_POST['winner'], $matchID, $leagueID);
+			echo $result;
 		/*	if ($result == 0)
 				echo $_POST['winner'];
-			else */
-				redirect('tournamentController/viewTournament/' . $leagueID);
+			else 
+				redirect('tournamentController/viewTournament/' . $leagueID); */
+			$result=$this->tournamentInitializer->updateMatchListing($winner, $matchID, $leagueID);
+			echo $result;
 		}
 	}
 	
@@ -102,5 +108,11 @@ class TournamentController extends CI_Controller
 		$leagueID = $this->uri->segment(3);
 		$this->tournamentInitializer->resetTournament($leagueID);
 		redirect('tournamentController/startTournament/'.$leagueID.'/');
+	}
+	
+	function displayID()
+	{
+		// FOR TESTING ONLY
+		echo 'Match ID: ' . $_POST['match_id'] . ' | ' . 'League ID:' . $_POST['league_id'];
 	}
 }
