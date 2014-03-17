@@ -4,7 +4,7 @@ include_once(APPPATH .'models/tournament.php');
 class SingleEliminationTournament extends Tournament
 {
 	public function __construct($team_ids)
-	{
+	{	
 		parent::__construct($team_ids);
 	}
 	
@@ -69,7 +69,7 @@ class SingleEliminationTournament extends Tournament
 		$counter=0;
 		for($i=0;$i<$numberOfMatchInFirstRound;$i++)
 		{
-			$match= new Match($this->team_ids[$counter], $this->team_ids[$counter+1], 1);
+			$match= new Match($this->team_ids[$counter], $this->team_ids[$counter+1], 1, null);
 			array_push($this->matches,$match);
 			$counter=$counter+2;
 		}
@@ -84,18 +84,18 @@ class SingleEliminationTournament extends Tournament
 			{
 				if(isset($this->team_ids[$indexOfTeamThatReceivedBye+1]))
 				{
-					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], $this->team_ids[$indexOfTeamThatReceivedBye+1], 2);
+					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], $this->team_ids[$indexOfTeamThatReceivedBye+1], 2, null);
 					array_push($this->matches,$match);
 				}
 				else
 				{
-					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], null, 2);
+					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], null, 2, null);
 					array_push($this->matches,$match);
 				}
 			}
 			else
 			{
-				$match= new Match(null, null, 2);
+				$match= new Match(null, null, 2, null);
 				array_push($this->matches,$match);
 			}
 			$indexOfTeamThatReceivedBye=$indexOfTeamThatReceivedBye+2;
@@ -110,7 +110,7 @@ class SingleEliminationTournament extends Tournament
 		{
 			for($l=0; $l<$numberOfMatchInThirdToLastRound; $l++)
 			{
-				$match= new Match(null, null, $k);
+				$match= new Match(null, null, $k, null);
 				array_push($this->matches,$match);
 			}
 			$numberOfMatchInThirdToLastRound=$numberOfMatchInThirdToLastRound/2;

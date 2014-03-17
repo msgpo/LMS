@@ -1,22 +1,18 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-include_once(APPPATH .'models/match.php');
-include_once(APPPATH .'models/singleEliminationTournament.php');
-class TournamentInitializer  extends CI_Model 
+include_once(APPPATH .'models/TournamentList.php');
+class DoubleElimTournamentList  extends TournamentList 
 {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('leagueList','',TRUE);
-		$this->load->model('teamList','',TRUE);
 	}
 	
-	function startSingleElimination($league_id)
+	function createTournament($league_id)
 	{
 		if($this->leagueList->getLeagueById($league_id)->num_rows()>0)
 		{
-			
 			$team_ids = $this->getTeamIDsOfALeague($league_id);
-			$tournament=new SingleEliminationTournament($team_ids);
+			$tournament=new DoubleEliminationTournament($team_ids);
 			$result= $tournament->generateMatches();
 			if($result==0)
 				return "Tournament Cannot be Started, Not enough teams";
@@ -24,7 +20,9 @@ class TournamentInitializer  extends CI_Model
 			{
 				$matches=$tournament->getMatches();
 				foreach($matches as $match)
+				{
 					$this->insertMatch($match, $league_id);
+				}
 				return 1;
 			}
 		}
@@ -32,47 +30,36 @@ class TournamentInitializer  extends CI_Model
 			return "league not found";
 	}
 	
-	function getTeamIDsOfALeague($league_id)
-	{
-		$team_ids=array();
-		$teams=$this->teamList->getAllTeamsByLeague_id($league_id);
-		foreach($teams->result() as $team)
-		{
-			array_push($team_ids, $team->team_id);
-		}
-		return $team_ids;
-	}
-	
 	public function insertMatch(Match $match, $league_id)
 	{
 		$teamA=$match->getTeamA();
 		$teamB=$match->getTeamB();
 		$roundNumber= $match->getRoundNumber();
+		$bracket=$match->getBracket();
 		if ($teamA && !$teamB)
 		{
 			// no Team B
-			$this->db->query("INSERT into match(league_id, team_a, roundNumber) VALUES ($league_id, $teamA, $roundNumber)");
+			$this->db->query("INSERT into match(league_id, team_a, roundnumber,bracket) VALUES ($league_id, $teamA, $roundNumber,'$bracket')");
 		}
 		else if (!$teamA && $teamB)
 		{
 			// no Team A
-			$this->db->query("INSERT into match(league_id, team_b, roundNumber) VALUES ($league_id, $teamB, $roundNumber)");
+			$this->db->query("INSERT into match(league_id, team_b, roundnumber,bracket) VALUES ($league_id, $teamB, $roundNumber,'$bracket')");
 		}
 		else if ($teamA && $teamB)
 		{
-			$this->db->query("INSERT into match(league_id, team_a, team_b, roundNumber) VALUES ($league_id, $teamA, $teamB, $roundNumber)");
+			$this->db->query("INSERT into match(league_id, team_a, team_b, roundnumber,bracket) VALUES ($league_id, $teamA, $teamB, $roundNumber,'$bracket')");
 		}
 		else if (!$teamA && !$teamB)
 		{
-			$this->db->query("INSERT into match(league_id, roundNumber) VALUES ($league_id, $roundNumber)");
+			$this->db->query("INSERT into match(league_id, roundnumber,bracket) VALUES ($league_id, $roundNumber,'$bracket')");
 		}
 	}
+	
 	public function getMatchesOfALeague($league_id)
 	{
-		return $this->db->query("SELECT * FROM match where league_id=$league_id ORDER BY roundnumber");
+		return $this->db->query("SELECT * FROM match where league_id=$league_id ORDER BY bracket DESC, roundnumber ASC, team_a ASC");
 	}
-	
-	//START HERE
 	
 	function updateMatchListing($winnerTeam, $matchID, $leagueID)
 	{
@@ -84,7 +71,7 @@ class TournamentInitializer  extends CI_Model
 		$this->updateWinner($winnerTeam, $loserTeam, $matchID);
 		$nextRound=($matchDetails->row()->roundnumber)+1;
 		$maxRound=$this->getNumberOfRounds($leagueID)->row()->maxround;
-		if($nextRound<=$maxRound) // originally <=
+		if($nextRound<=$maxRound)
 		{
 			$nextMatch=$this->nullTeamChecker($leagueID,$nextRound)->row();
 			if (!isset($nextMatch->team_a))
@@ -97,11 +84,6 @@ class TournamentInitializer  extends CI_Model
 			return 0;
 	}
 	
-	function getSpecificMatch($matchID)
-	{
-		return $this->db->query("SELECT * FROM match WHERE match_id = '$matchID'");
-	}
-	
 	function updateWinner($winnerTeam, $loserTeam, $matchID)
 	{
 		$this->db->query("UPDATE match SET winner = $winnerTeam, loser = $loserTeam WHERE match_id = $matchID");
@@ -109,7 +91,7 @@ class TournamentInitializer  extends CI_Model
 	
 	function getMatchesOfARoundNumber($roundnumber,$league_id)
 	{
-		return $this->db->query("SELECT * FROM match where league_id=$league_id AND roundnumber=$roundnumber");
+		return $this->db->query("SELECT * FROM match where league_id=$league_id AND roundnumber=$roundnumber AND bracket IS NULL");
 	}
 	
 	function updateHomeTeamNextMatch($winnerTeam, $match_id, $leagueID)
@@ -129,7 +111,7 @@ class TournamentInitializer  extends CI_Model
 	
 	function nullTeamChecker($league_id, $round)
 	{
-		return $this->db->query("SELECT * FROM match WHERE league_id = $league_id AND roundnumber = $round AND (team_a IS NULL OR team_b IS NULL)");
+		return $this->db->query("SELECT * FROM match WHERE league_id = $league_id AND roundnumber = $round AND (team_a IS NULL OR team_b IS NULL) AND bracket IS NULL");
 	}
 	
 	function setStarted($league_id)
@@ -142,9 +124,25 @@ class TournamentInitializer  extends CI_Model
 		$this->db->query("DELETE from match WHERE league_id = $league_id");
 	}
 	
-	// Query the winner!
 	function getSpecificWinner($league_id, $maxround)
 	{
-		return $this->db->query("SELECT match.winner, team.teamname FROM match INNER JOIN team ON (match.winner = team.team_id) WHERE match.roundnumber = $maxround AND match.league_id = $league_id");
+		return $this->db->query("SELECT match.winner, team.teamname FROM match INNER JOIN team ON (match.winner=team.team_id) WHERE match.roundnumber=$maxround AND match.league_id= $league_id AND match.bracket IS NULL");
 	}
+	
+	function getSpecificMatch($matchID)
+	{
+		return $this->db->query("SELECT * FROM match WHERE match_id = '$matchID'");
+	}
+	
+	function getTeamIDsOfALeague($league_id)
+	{
+		$team_ids=array();
+		$teams=$this->teamList->getAllTeamsByLeague_id($league_id);
+		foreach($teams->result() as $team)
+		{
+			array_push($team_ids, $team->team_id);
+		}
+		return $team_ids;
+	}
+	
 }?>

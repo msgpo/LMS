@@ -21,7 +21,9 @@
 	// $round=1;
 	echo '<table class="table table-hover">';
 	echo '<tr>';
-	echo '<th>Home</th><th> </th><th>Visitor</th><th>Round</th><th>Options</th>';
+	echo '<th>Home</th><th> </th><th>Visitor</th><th>Round</th>';
+	if ($matches->row()->bracket) echo '<th>Bracket</th>';
+	echo '<th>Options</th>';
 	echo '</tr>';
 	foreach($matches->result() as $match)
 	{
@@ -70,6 +72,10 @@
 		if (!$teamAName && !$teamBName)
 			echo '<tr><td>To be determined</td><td> VS </td><td>To be determined</td>';
 		echo '<td>'.$match->roundnumber.'</td>';
+		if ($match->bracket == "w")
+			echo '<td>Winner\'s Bracket</td>';
+		if ($match->bracket == "l")
+			echo '<td>Loser\'s Bracket</td>';
 		if (($teamAName && $teamBName) && !$match->winner)
 		//	echo '<td><a class="btn btn-info btn-lg" href="' . base_url() . 'index.php/tournamentController/setMatch/'.$league_id.'/' . $match->match_id . '">Set Winner</a></td>';
 			// id="setWinner-<League ID>-<Match ID>"
@@ -113,13 +119,13 @@ $(document).ready(function()
 		{
 			type: "POST",
 			url: "<?php echo base_url(); ?>index.php/tournamentController/updateMatch/",
-		//	data: $('form.setwinner').serialize(),
-			data:
+			data: $('form.setwinner').serialize(),
+		/*	data:
 				{
 					league_id: $("input#league").val(),
 					match_id: $("input#match").val(),
 					winner: $("select#desiredWinner").val()
-				},
+				}, */
 			success: function(msg){
 				if (msg == 1)
 				{

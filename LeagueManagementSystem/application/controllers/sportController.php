@@ -127,13 +127,15 @@ class SportController extends CI_Controller
 			{
 				$notif=array('notification'=> "A Sport has succesfully updated");
 				$this->session->set_userdata($notif);
-				redirect('sportController/sportlist');
+				echo $result;
+			//	redirect('sportController/sportlist');
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('sportController/edit/'.$_POST['sport_id'].'/');
+				echo $errors['err'];
+			//	redirect('sportController/edit/'.$_POST['sport_id'].'/');
 			}
 		}
 		else
@@ -142,14 +144,16 @@ class SportController extends CI_Controller
 	
 	function remove()
 	{
-		$sport_id = $this->uri->segment(3);
+		//$sport_id = $this->uri->segment(3);
+		$sport_id = $_POST['sport_id'];
 		$result= $this->sportList->disableSport($sport_id);
 		if($result==1)
 			$notif=array('notification'=> "A Sport has succesfully removed");
 		else
 			$notif=array('notification'=> $result);
 		$this->session->set_userdata($notif);
-		redirect('sportController/index');
+		//redirect('sportController/index');
+		echo $result;
 	}
 	
 	// New functions for ajax here
