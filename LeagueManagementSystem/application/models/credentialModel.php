@@ -10,7 +10,8 @@ class CredentialModel extends CI_Model
 		function login(Account $account)
         {
 			if($this->correctCredentials($account->getUsername(),$account->getPassword())==1)
-				return null;
+			//	return null;
+				return 1;
 			else
 			{
 				return "Invalid Username or Password";

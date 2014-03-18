@@ -52,7 +52,7 @@ class SportList extends CI_Model
 	
 	function getSportList()
 	{
-		return $this->db->query("SELECT * FROM sport WHERE accessible = 'true' ORDER BY sport_id");
+		return $this->db->query("SELECT * FROM sport WHERE accessible = 'true' ORDER BY sportname ASC");
 	}
 	
 	function disableSport($id)

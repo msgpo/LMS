@@ -22,7 +22,8 @@
 	echo '<table class="table table-hover">';
 	echo '<tr>';
 	echo '<th>Home</th><th> </th><th>Visitor</th><th>Round</th>';
-	if ($matches->row()->bracket) echo '<th>Bracket</th>';
+//	$match = $matches->result();
+	if ($matches->bracket) echo '<th>Bracket</th>';
 	echo '<th>Options</th>';
 	echo '</tr>';
 	foreach($matches->result() as $match)
@@ -44,25 +45,15 @@
 		{
 			echo '<tr><td>';
 			echo ucwords($teamAName);
-		//	if ($match->team_a == $match->winner)
-		//		echo ' (Winner)';
 			echo '</td><td>';
-		/*	if ($match->team_a == $match->winner)
-				echo ' < ';
-			if ($match->team_b == $match->winner)
-				echo ' > ';
-			if (!$match->winner)
-				echo ' VS '; */
 			if ($match->team_a == $match->winner)
-				echo ' < ';
-			else if ($match->team_b == $match->winner)
 				echo ' > ';
+			else if ($match->team_b == $match->winner)
+				echo ' < ';
 			else
 				echo ' VS ';
 			echo '</td><td>';
 			echo ucwords($teamBName);
-		//	if ($match->team_b == $match->winner)
-		//		echo ' (Winner)';
 			echo '</td>';
 		}
 		if (!$teamAName && $teamBName)
@@ -77,12 +68,8 @@
 		if ($match->bracket == "l")
 			echo '<td>Loser\'s Bracket</td>';
 		if (($teamAName && $teamBName) && !$match->winner)
-		//	echo '<td><a class="btn btn-info btn-lg" href="' . base_url() . 'index.php/tournamentController/setMatch/'.$league_id.'/' . $match->match_id . '">Set Winner</a></td>';
-			// id="setWinner-<League ID>-<Match ID>"
-		//	echo '<td><button class="btn btn-info btn-lg" id="editSport'.$match->league_id.'-'.$match->match_id.'" data-league-id="'. $match->league_id.'" data-match-id="'. $match->match_id . '">Set Winner</button></td>';
-		echo '<td><button class="btn btn-info btn-lg" id="setWinnerModal" data-toggle="modal" data-target="#setWinner'.$match->league_id.'-'.$match->match_id.'">Set Winner</button></td>';
+			echo '<td><button class="btn btn-info btn-lg" id="setWinnerModal" data-toggle="modal" data-target="#setWinner'.$match->league_id.'-'.$match->match_id.'">Set Winner</button></td>';
 		else
-		//echo '<td><a class="btn btn-danger btn-lg" href="#">Cannot set match</a></td>';
 			echo '<td></td>';
 		echo '</tr>';	
 ?>
@@ -90,54 +77,27 @@
 <script>
 // Edit/Remove goes here
 $(document).ready(function()
-{
-/*
-	$("#editSport<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").click(function()
-	{
-		$.ajax(
-		{
-			type: "POST",
-			url: "<?php echo base_url(); ?>index.php/tournamentController/displayID/",
-			data: {
-				league_id: $("#editSport<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").data('league-id'),
-				match_id: $("#editSport<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").data('match-id'),
-				},
-			success: function(msg){
-				// alert(msg);
-				
-			},
-			error: function(){
-				alert("failure");
-			}
-		});
-	}); */
-	
+{	
 	//Set Winner
-	$("button#submitWinner").click(function()
+	$("button#submitWinner<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").click(function()
 	{
 		$.ajax(
 		{
 			type: "POST",
 			url: "<?php echo base_url(); ?>index.php/tournamentController/updateMatch/",
-			data: $('form.setwinner').serialize(),
-		/*	data:
+		//	data: $('form.setwinner').serialize(),
+			data:
 				{
-					league_id: $("input#league").val(),
-					match_id: $("input#match").val(),
-					winner: $("select#desiredWinner").val()
-				}, */
+					league_id: <?php echo $match->league_id; ?>,
+					match_id: <?php echo $match->match_id; ?>,
+					winner: $("select#desiredWinner<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>").val()
+				}, 
 			success: function(msg){
-				if (msg == 1)
-				{
-					alert(msg);
-					$("#form-content").modal('hide');
-					//	location.reload();
-				}
-				else
-				{
-					$("#form-content").modal('hide');
-				}
+				$("#form-content").modal('hide');
+				location.reload();
 				return;
+			}, */
+			alert(msg);
 			},
 			error: function(){
 				alert("failure");
@@ -160,7 +120,7 @@ $(document).ready(function()
 		<form class="setwinner">
 			<input type="hidden" id="league" name="league_id" value="<?php echo $match->league_id; ?>" />
 			<input type="hidden" id="match" name="match_id" value="<?php echo $match->match_id; ?>" /> 
-			<select name="winner" id="desiredWinner">
+			<select name="winner" id="desiredWinner<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>">
 				<option value="<?php echo $match->team_a; ?>"><?php echo ucwords($teamAName); ?></option>
 				<option value="<?php echo $match->team_b; ?>"><?php echo ucwords($teamBName); ?></option>
 			</select>
@@ -168,7 +128,7 @@ $(document).ready(function()
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="submitWinner">Set Winner</button>
+        <button type="button" class="btn btn-primary" id="submitWinner<?php echo $match->league_id; ?>-<?php echo $match->match_id; ?>">Set Winner</button>
 		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	  </div>
     </div>

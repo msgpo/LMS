@@ -149,15 +149,15 @@ class LeagueController extends CI_Controller
 			{
 				$notif=array('notification'=> "The League Details has succesfully updated");
 				$this->session->set_userdata($notif);
-				//echo $result;
-				redirect('leagueController/viewLeagueInfo/'.$leagueID);
+				echo $result;
+				//redirect('leagueController/viewLeagueInfo/'.$leagueID);
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				//echo $errors;
-				redirect('leagueController/editLeague/'.$leagueID.'/');
+				echo $errors;
+				//redirect('leagueController/editLeague/'.$leagueID.'/');
 			}
 		}
 	}
@@ -166,14 +166,15 @@ class LeagueController extends CI_Controller
 	{
 		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$leagueID = $this->uri->segment(3);
-			$result= $this->leagueList->deactivateLeague($leagueID);
-			if($result==1)
+		//	$leagueID = $this->uri->segment(3);
+			$result= $this->leagueList->deactivateLeague($_POST['league_id']);
+			echo $result;
+		/*	if($result==1)
 			{
 				$notif=array('notification'=> "A League has succesfully deactivated");
 				$this->session->set_userdata($notif);
 				redirect('leagueController/index');
-			}
+			} */
 		}
 		else
 			redirect('login');

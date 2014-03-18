@@ -121,8 +121,8 @@ class SportController extends CI_Controller
 	{
 		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$newsport=new Sport($_POST['sportname']);
-			$result=$this->sportList->editSport($_POST['sport_id'], $newsport);
+			$newsport=new Sport($_POST['sname']);
+			$result=$this->sportList->editSport($_POST['id'], $newsport);
 			if($result==1)
 			{
 				$notif=array('notification'=> "A Sport has succesfully updated");
@@ -154,12 +154,6 @@ class SportController extends CI_Controller
 		$this->session->set_userdata($notif);
 		//redirect('sportController/index');
 		echo $result;
-	}
-	
-	// New functions for ajax here
-	function getId()
-	{
-		echo $_POST['sport_id'];
 	}
 }
 ?>
