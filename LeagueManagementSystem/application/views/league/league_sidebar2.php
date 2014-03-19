@@ -53,9 +53,28 @@ foreach($leagueDetails->result() as $ldetails)
 	{
 		if ($ldet->isstarted == "f" && $ldet->isended == "f")
 		{
-			echo '<a href="'.base_url().'index.php/teamController/addTeam/'.$id.'">Add a new Team</a>';	
+		//	echo '<a href="'.base_url().'index.php/teamController/addTeam/'.$id.'">Add a new Team</a>';	
+			echo '<a href="#" id="add-team" data-leagueid="'.$id.'">Add Team</a>';
 			echo '<a href="'. base_url().'index.php/tournamentController/startTournament/'.$id.'">Start League</a>';
+		}
+		else
+		{
+			echo '<a href="' . base_url() . 'index.php/tournamentController/viewTournament/' . $id . '">View Tournament</a>';
+			echo '<a href="'.base_url().'index.php/tournamentController/unstartLeague/'.$id.'" onclick="return confirm(\'Are you sure you want to unstart this league?\')"> Unstart League</a>';
 		}
 	}
 ?>
-<a href="<?php echo base_url();?>index.php/tournamentController/viewTournament/<?php echo $id ?>">View Tournament</a>
+
+<div id="addteam-dialog" title="Add a New Team">
+	<input type="hidden" id="addteam-leagueid" name="league_id" value="" />
+	<table>
+		<tr><td>Team Name</td><td><input type="text" id="addteam-teamname" name="teamname" value=""></td></tr>
+		<tr><td>Team Description</td><td><textarea rows="4" cols="40" id="addteam-teamdesc" name="teamdesc" value=""></textarea></td></tr>
+		<tr><td>Coach's Last Name</td><td><input type="text" id="addteam-surname" name="coachlastname" value=""></td></tr>
+		<tr><td>Coach's First Name</td><td><input type="text" id="addteam-firstname" name="coachfirstname" value=""></td></tr>
+		<tr><td>Coach's Phone Number</td><td><input type="text" id="addteam-coachphone" name="coachphonenumber" value=""></td></tr>
+	</table>
+	<div id="tooltipAddTeam">
+	</div>
+	<button type="button" class="btn btn-primary" id="submitAddTeam">Add Team</button>
+</div>

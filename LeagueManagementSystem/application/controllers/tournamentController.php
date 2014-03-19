@@ -10,8 +10,8 @@ class TournamentController extends CI_Controller
 		$this->load->model('credentialModel','',TRUE);
 		$this->load->model('leagueList','',TRUE);
 		$this->load->model('teamList','',TRUE);
-		$this->load->model('singleElimTournamentList','',TRUE);
-		$this->load->model('doubleElimTournamentList','',TRUE);
+		$this->load->model('singleEliminationTournamentList','',TRUE);
+		$this->load->model('doubleEliminationTournamentList','',TRUE);
 	}
 	
 	function startTournament()
@@ -22,19 +22,22 @@ class TournamentController extends CI_Controller
 			$league=$this->leagueList->getLeagueById($leagueID)->result();
 			if($league[0]->tournamenttype=="single elimination")
 			{
-				
-				$result=$this->singleElimTournamentList->createTournament($leagueID);
+				$result=$this->singleEliminationTournamentList->createTournament($leagueID);
 				if($result==1)
 				{
 					$this->leagueList->setStarted($leagueID);
 					redirect('tournamentController/viewTournament/'.$leagueID.'/');
 				}
 				else
-					echo "Not enough teams";
+				{
+					$notif=array('notification'=> $result);
+					$this->session->set_userdata($notif);
+					redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+				}
 			}
 			else if($league[0]->tournamenttype=="double elimination")
 			{
-				$result=$this->doubleElimTournamentList->createTournament($leagueID);
+				$result=$this->doubleEliminationTournamentList->createTournament($leagueID);
 				if($result==1)
 				{
 					$this->leagueList->setStarted($leagueID);
@@ -46,7 +49,6 @@ class TournamentController extends CI_Controller
 		}
 		else
 			redirect('login');
-			
 	}
 	function viewTournament()
 	{
@@ -56,18 +58,19 @@ class TournamentController extends CI_Controller
 			$league=$this->leagueList->getLeagueById($leagueID);
 			if($league->row()->tournamenttype=="single elimination")
 			{
-				$maxRound = $this->singleElimTournamentList->getNumberOfRounds($leagueID)->row()->maxround;
-				$data['winnerQuery'] = $this->singleElimTournamentList->getSpecificWinner($leagueID, $maxRound);
-				$data['matches']=$this->singleElimTournamentList->getMatchesOfALeague($leagueID);
+				$maxRound = $this->singleEliminationTournamentList->getNumberOfRounds($leagueID);
+				$data['winnerQuery'] = $this->singleEliminationTournamentList->getSpecificWinner($leagueID, $maxRound);
+				$data['matches']=$this->singleEliminationTournamentList->getMatchesOfALeague($leagueID);
+				$data['headline'] = 'Single Elimination Tournament Match-up';
 			}
 			else if($league->row()->tournamenttype=="double elimination")
 			{
-				$maxRound = $this->doubleElimTournamentList->getNumberOfRounds($leagueID)->row()->maxround;
-				$data['winnerQuery'] = $this->doubleElimTournamentList->getSpecificWinner($leagueID, $maxRound);
-				$data['matches']=$this->doubleElimTournamentList->getMatchesOfALeague($leagueID);
+				$data['winnerQuery'] = $this->doubleEliminationTournamentList->getSpecificWinner($leagueID);
+				$data['matches']=$this->doubleEliminationTournamentList->getMatchesOfALeague($leagueID);
+				$data['headline'] = 'Double Elimination Tournament Match-up';
 			}
+			
 			$data['title'] = "Donut Fortress League Management System: League Module";
-			$data['headline'] = 'Tournament Match-up';
 			$data['include'] = 'tournament/tournament';
 			$data['masthead'] = 'tournament/tournament_masthead';
 			$data['nav'] = 'tournament/tournament_navigation';
@@ -85,7 +88,7 @@ class TournamentController extends CI_Controller
 		{
 			$leagueID = $this->uri->segment(3);
 			$matchID = $this->uri->segment(4);
-			$matchDetails = $this->singleElimTournamentList->getSpecificMatch($matchID);
+			$matchDetails = $this->singleEliminationTournamentList->getMatchDetails($matchID);
 			$data['teamAQuery'] = $this->teamList->getTeamById($matchDetails->row()->team_a);
 			$data['teamBQuery'] = $this->teamList->getTeamById($matchDetails->row()->team_b);
 			$data['matchDetails']=$matchDetails;
@@ -104,32 +107,39 @@ class TournamentController extends CI_Controller
 			redirect('login');
 		}
 	}
+	
+	
 	function updateMatch()
 	{
 		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$leagueID = $_POST['league_id'];
-			$matchID = $_POST['match_id'];
-			$league=$this->leagueList->getLeagueById($leagueID)->result(); 
+			$leagueID = $this->uri->segment(3);
+			$matchID = $this->uri->segment(4);
+			$league=$this->leagueList->getLeagueById($leagueID)->result();
 			if($league[0]->tournamenttype=="single elimination")
-			{ 
-				$result=$this->singleElimTournamentList->updateMatchListing($_POST['winner'], $matchID, $leagueID);
-				echo $result;
-		//	echo print_r($_POST);
-			}
-			/*else if($league[0]->tournamenttype=="double elimination")
 			{
-				$result=$this->singleElimTournamentList->updateMatchListing($_POST['winner'], $matchID, $leagueID);
-			}*/
-			//redirect('tournamentController/viewTournament/' . $leagueID);
+				$result=$this->singleEliminationTournamentList->updateMatchListing($_POST['winner'], $matchID);
+			}
+			else if($league[0]->tournamenttype=="double elimination")
+			{
+				$result=$this->doubleEliminationTournamentList->updateMatchListing($_POST['winner'], $matchID, $leagueID);
+			}
+			redirect('tournamentController/viewTournament/' . $leagueID);
 		}
 	}
 	
 	function resetTournament()
 	{
 		$leagueID = $this->uri->segment(3);
-		$this->singleElimTournamentList->resetTournament($leagueID);
+		$this->singleEliminationTournamentList->resetTournament($leagueID);
 		redirect('tournamentController/startTournament/'.$leagueID.'/');
 	}
 	
+	function unstartLeague()
+	{
+		$leagueID = $this->uri->segment(3);
+		$this->singleEliminationTournamentList->resetTournament($leagueID);
+		$this->leagueList->setUnstarted($leagueID);
+		redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+	}
 }?>

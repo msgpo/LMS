@@ -10,15 +10,18 @@
 	
 	<title><?php echo $title;?></title>
 	
+	<script src="<?php echo base_url(); ?>jquery-ui-1.10.4.custom/js/jquery-1.10.2.js"></script>
+	
 	<!-- Bootstrap core CSS -->
     <link href="<?php echo base_url(); ?>df_lms_new/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="<?php echo base_url(); ?>df_lms_new/css/main.css" rel="stylesheet">
 	<link rel="stylesheet" href="<?php echo base_url(); ?>df_lms_new/css/font-awesome.min.css">
+	
 
-    <!--<script src="<?php echo base_url(); ?>df_lms_new/js/jquery.min.js"></script>-->
-	<script src="<?php echo base_url(); ?>df_lms_new/js/jquery-1.9.1.js"></script>
+<!--	<script src="<?php echo base_url(); ?>df_lms_new/js/jquery-1.9.1.js"></script>-->
+
 	<script src="<?php echo base_url(); ?>df_lms_new/js/Chart.js"></script>
 	<!--<script src="<?php echo base_url(); ?>df_lms_new/js/modernizr.custom.js"></script>-->
 	
@@ -34,19 +37,11 @@
     <![endif]-->
 	
 	<!-- Datepicker and other jQuery stuff -->
-	<link href="<?php echo base_url(); ?>jquery-ui-1.10.3/themes/base/jquery.ui.all.css" rel="stylesheet">
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery-ui.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.widget.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.mouse.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.button.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.draggable.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.position.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.resizable.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.button.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.dialog.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.datepicker.js"></script>
-	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery.ui.effect.js"></script>
+	
+<!--	<script src="<?php echo base_url(); ?>jquery-ui-1.10.3/ui/jquery-ui.js"></script> -->
+	<script src="<?php echo base_url(); ?>jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+	<link href="<?php echo base_url(); ?>jquery-ui-1.10.4.custom/css/australian-colours/jquery-ui-1.10.4.custom.css" rel="stylesheet">
+	
 	<script>
 		$(function() 
 		{
@@ -120,6 +115,11 @@
 		</div>
 	</div>
 	
+<!-- Start of modals used by all features -->
+<div id="loading-box" title="Please wait, mate.">
+	<img src="<?php echo base_url(); ?>df_lms_new/img/australia-flag-waving-emoticon-animated.gif" alt="Loading..." />
+</div>
+
 <!-- End modals here -->
 
 <!-- Bootstrap core JavaScript

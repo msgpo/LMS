@@ -69,12 +69,12 @@ class Home extends CI_Controller
 						
 					}
 					else
-						redirect('login');
+						redirect('initial');
 				}
 			}
 			else
 			{
-				redirect('login');
+				redirect('initial');
 			}
 		}
 		function incorrectoldpass($oldpass)

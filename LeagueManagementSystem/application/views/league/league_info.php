@@ -132,7 +132,9 @@ $(document).ready(function()
 		foreach($tList as $team)
 		{
 			echo '<tr>';
-			echo '<td><a  class="btn btn-info btn-lg" href="' . base_url() . 'index.php/teamController/editTeam/' .$league_id.'/'. $team->team_id . '">Edit</a><a class="btn btn-danger btn-lg" href="' . base_url() . 'index.php/teamController/removeTeam/' .$league_id.'/'. $team->team_id . '" onclick="return confirm(\'Remove this  Team?\')">Remove</a></td><td align="center">' . ucwords($team->teamname) . '</td><td align="center">' . ucwords($team->coachfirstname).' '.ucwords($team->coachlastname). '</td><td align="center">' .ucwords($team->coachphonenumber). '</td><td align="center">' .ucwords($team->teamdesc). '</td>';
+//			echo '<td><a  class="btn btn-info btn-lg" href="' . base_url() . 'index.php/teamController/editTeam/' .$league_id.'/'. $team->team_id . '">Edit</a>';
+			echo '<td><button class="btn btn-success btn-lg edit-team" data-leagueid="' . $league_id . '" data-teamid="'. $team->team_id . '" data-teamname="'. $team->teamname .'" data-teamdesc="'.$team->teamdesc .'" data-coachsurname="'. $team->coachlastname .'" data-coachfirstname="' . $team->coachfirstname . '" data-coachphone="'. $team->coachphonenumber .'">Edit Info</button>';
+			echo '<a class="btn btn-danger btn-lg" href="' . base_url() . 'index.php/teamController/removeTeam/' .$league_id.'/'. $team->team_id . '" onclick="return confirm(\'Remove this  Team?\')">Remove</a></td><td align="center">' . ucwords($team->teamname) . '</td><td align="center">' . ucwords($team->coachfirstname).' '.ucwords($team->coachlastname). '</td><td align="center">' .ucwords($team->coachphonenumber). '</td><td align="center">' .ucwords($team->teamdesc). '</td>';
 			echo '</tr>';
 		}
 ?>
@@ -179,4 +181,19 @@ if ($sportList)
 	<!--<strong>TIP: </strong>Sport names are case insensitive.-->
 </div>
 <button type="button" class="btn btn-primary" id="submitUpdateLeague">Edit League Details</button>
+</div>
+
+<div id="editteam-dialog" title="Edit Team Details">
+	<input type="hidden" id="editteam-leagueid" name="league_id" value="" />
+	<input type="hidden" id="editteam-teamid" name="league_id" value="" />
+	<table>
+		<tr><td>Team Name</td><td><input type="text" id="editteam-teamname" name="teamname" value=""></td></tr>
+		<tr><td>Team Description</td><td><textarea rows="4" cols="40" id="editteam-teamdesc" name="teamdesc" value=""></textarea></td></tr>
+		<tr><td>Coach's Last Name</td><td><input type="text" id="editteam-surname" name="coachlastname" value=""></td></tr>
+		<tr><td>Coach's First Name</td><td><input type="text" id="editteam-firstname" name="coachfirstname" value=""></td></tr>
+		<tr><td>Coach's Phone Number</td><td><input type="text" id="editteam-coachphone" name="coachphonenumber" value=""></td></tr>
+	</table>
+	<div id="tooltipEditTeam">
+	</div>
+	<button type="button" class="btn btn-primary" id="submitEditTeam">Edit Team</button>
 </div>

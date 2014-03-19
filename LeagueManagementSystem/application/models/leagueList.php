@@ -216,5 +216,9 @@ class LeagueList extends CI_Model
 		$this->db->query("UPDATE league SET isstarted = true WHERE league_id = $league_id");
 	}
 	
+	function setUnstarted($league_id) 
+	{ 
+		$this->db->query("UPDATE league SET isstarted = false WHERE league_id = $league_id"); 
+	}
 	
 }?>

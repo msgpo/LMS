@@ -22,8 +22,8 @@
 <button class="btn btn-primary btn-lg" id="addSportDialog">Add New Sport</button>
 
 <div id="addsport-dialog" title="Add Sport">
-	Sport name:
-	<input placeholder="Enter a sport name here" value="" type="text" id="sportname" name="sportname" />
+	<label for="sportname">Sport Name</label>
+	<input class="form-control" placeholder="Enter a sport name here" value="" type="text" id="sportname" name="sportname" />
 	<div id="tooltip" class="alert alert-info">
 		<strong>TIP: </strong>Sport names are case insensitive.
 	</div>
@@ -32,8 +32,8 @@
 
 <div id="editsport-dialog" title="Edit Sport">
 	<input type="hidden" id="sportid" name="sportid" value="" />
-	Sport name:
-	<input placeholder="Enter a sport name here" value="" type="text" id="editsportname" name="sportname" />
+	<label for="editsportname">Sport Name</label>
+	<input class="form-control" placeholder="Enter a sport name here" value="" type="text" id="editsportname" name="sportname" />
 	<div id="tooltipEdit" class="alert alert-info">
 		<strong>TIP: </strong>Sport names are case insensitive.
 	</div>

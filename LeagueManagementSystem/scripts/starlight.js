@@ -1,6 +1,10 @@
 $(function() {
 
-	
+	$("#loading-box").dialog({
+		autoOpen: false,
+        resizable: false,
+		modal: false
+	});
 
 	// Login Module
 	$("#login-dialog").dialog({
@@ -19,7 +23,7 @@ $(function() {
 		width: 450,
         height: 300,
         resizable: false,
-		modal: true
+		modal: false
 	});
 	$("#editsport-dialog").dialog({
 		autoOpen: false,
@@ -94,6 +98,42 @@ $(function() {
 	$(".update-league").button().bind("click", showUpdateLeagueForm);
 	$("#submitUpdateLeague").button();
 	$("#submitUpdateLeague").button().bind("click", updateLeague);
+	
+	// Teams
+	$("#addteam-dialog").dialog({
+		autoOpen: false,
+		width: 706,
+        height: 520,
+        resizable: true,
+		modal: true
+	});
+	
+	$("#editteam-dialog").dialog({
+		autoOpen: false,
+		width: 706,
+        height: 520,
+        resizable: true,
+		modal: true
+	});
+	
+	$("#add-team").click(showAddTeamForm);
+	$("#submitAddTeam").button();
+	$("#submitAddTeam").button().bind("click", addTeam);
+	$(".edit-team").click(showEditTeamForm);
+	$("#submitEditTeam").button();
+	$("#submitEditTeam").button().bind("click", editTeam);
+	
+	// global
+	$.ajaxSetup({
+        beforeSend: function () {
+            showDialog && $("#loading-box").dialog("open");
+        },
+        complete: function () {
+            $("#loading-box").dialog("close");
+            showDialog || (showDialog = true);
+        }
+    });
+	
 	
 	// unused
 	$("#submitCancelSport").button();

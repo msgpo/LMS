@@ -11,9 +11,9 @@ abstract class TournamentList  extends CI_Model
 		$this->load->model('teamList','',TRUE);
 	}
 	
-	//abstract protected function createTournament($league_id);
+	abstract protected function createTournament($league_id);
 	
-	//abstract protected function insertMatch(Match $match, $league_id);
+	abstract protected function insertMatch(Match $match, $league_id);
 	
 	//abstract protected function updateMatchListing($winnerTeam, $matchID, $leagueID);
 }?>

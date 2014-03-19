@@ -10,21 +10,18 @@ class DoubleEliminationTournament extends Tournament
 	
 	public function calculateNumberOfMatches()
 	{
-		return((2 * parent::getNumberOfTeams())-2);
+		return (2*(parent::getNumberOfTeams())-2);
 	}
-	
-	public function calculateNumOfMatchInWinnersBracket()
+	public function calculateNumberOfMatchesInWinnerBracket()
 	{
-		return (parent::getNumberOfTeams()-1);
+		return(parent::getNumberOfTeams()-1);
 	}
-	
-	public function calculateNumOfMatchInLosersBracket()
+	public function calculateNumberOfMatchesInLoserBracket()
 	{
-		return ($this->calculateNumberOfMatches() - $this->calculateNumOfMatchInWinnersBracket() - 1);
+		return(parent::getNumberOfTeams()-2);
 	}
 	
-	// Winner's bracket only
-	public function calculateNumberOfRounds()
+	public function calculateNumberOfRoundsInWinnerBracket()
 	{
 		$numberOfteams=parent::getNumberOfTeams();
 		$n=0;
@@ -35,12 +32,31 @@ class DoubleEliminationTournament extends Tournament
 		return $n;
 	}
 	
-	public function calculateNumberOfByes()
+	public function calculateNumberOfRoundsInLoserBracket()
+	{
+		$numberOfteams=(parent::getNumberOfTeams())-1;
+		$n=0;
+		while(pow(2,$n)<$numberOfteams)
+		{
+			$n=$n+1;
+		}
+		return $n;
+	}
+	
+	public function calculateNumberOfByesInWinnerBracket()
 	{
 		$numberOfteams=parent::getNumberOfTeams();
-		return ((pow(2,$this->calculateNumberOfRounds()))-$numberOfteams);
+		return ((pow(2,$this->calculateNumberOfRoundsInWinnerBracket()))-$numberOfteams);
 	}
-	public function calculateNumberOfMatchInFirstRound()
+	
+	public function calculateNumberOfByesInLoserBracket()
+	{
+		$numberOfteams=(parent::getNumberOfTeams())-1;
+		return ((pow(2,$this->calculateNumberOfRoundsInLoserBracket()))-$numberOfteams);
+	}
+	
+	
+	public function calculateNumberOfMatchInFirstRoundInWinnerBracket()
 	{
 		$numberOfteams=parent::getNumberOfTeams();
 		$n=0;
@@ -51,139 +67,145 @@ class DoubleEliminationTournament extends Tournament
 		return ($numberOfteams-(pow(2,$n-1)));
 	}
 	
-	function calculateNumberOfMatchInSecondRound()
+	public function calculateNumberOfMatchInFirstRoundInLoserBracket()
 	{
-		return (($this->calculateNumberOfByes()+($this->calculateNumberOfMatchInFirstRound()))/2);
+		$numberOfteams=(parent::getNumberOfTeams())-1;
+		$n=0;
+		while(pow(2,$n)<$numberOfteams)
+		{
+			$n=$n+1;
+		}
+		return ($numberOfteams-(pow(2,$n-1)));
+	}
+	
+	function calculateNumberOfMatchInSecondRoundInWinnerBracket()
+	{
+		return (($this->calculateNumberOfByesInWinnerBracket()+($this->calculateNumberOfMatchInFirstRoundInWinnerBracket()))/2);
+	}
+	
+	function calculateNumberOfMatchInSecondRoundInLoserBracket()
+	{
+		return (($this->calculateNumberOfByesInLoserBracket()+($this->calculateNumberOfMatchInFirstRoundInLoserBracket()))/2);
 	}
 	
 	public function generateMatches()
 	{
 		if(($this->calculateNumberOfMatches())>1)
 		{
-			$this->populateMatch();
+			$this->populateMatchInWinnerBracket();
+			$this->populateMatchInLoserBracket();
+			$this->populateMatchInLoserAndWinnerBracket("f");
 			return 1;
 		}
 		else
 			return 0;
 	}
-	public function populateMatch()
+	public function populateMatchInWinnerBracket()
 	{
-		$this->populateMatchInFirstRound();
-		$indexOfTeamThatReceivedBye=(parent::getNumberOfTeams())-($this->calculateNumberOfByes());
-		$this->populateMatchInSecondRound($indexOfTeamThatReceivedBye);
-		$this->populateThirdToLastRound();
-		$this->populateMatchInFirstRoundLB();
-		$indexOfTeamThatReceivedBye=(parent::getNumberOfTeams())-($this->calculateNumberOfByes());
-		$this->populateMatchInSecondRoundLB($indexOfTeamThatReceivedBye);
-		$this->populateThirdToLastRoundLB();
+		$this->populateMatchInFirstRoundInWinnerBracket("w");
+		$indexOfTeamThatReceivedBye=(parent::getNumberOfTeams())-($this->calculateNumberOfByesInWinnerBracket());
+		$this->populateMatchInSecondRoundInWinnerBracket($indexOfTeamThatReceivedBye,"w");
+		$this->populateThirdToLastRoundInWinnerBracket("w");
 	}
 	
-	public function populateMatchInFirstRound()
+	public function populateMatchInLoserBracket()
 	{
-		$numberOfMatchInFirstRound=$this->calculateNumberOfMatchInFirstRound();
+		$this->populateMatchInFirstRoundInLoserBracket("l");
+		//$indexOfTeamThatReceivedBye=((parent::getNumberOfTeams())-1)-($this->calculateNumberOfByesInLoserBracket());
+		$this->populateMatchInSecondRoundInLoserBracket("l");
+		$this->populateThirdToLastRoundInLoserBracket("l");
+	}
+	
+	public function populateMatchInFirstRoundInWinnerBracket($bracket)
+	{
+		$numberOfMatchInFirstRound=$this->calculateNumberOfMatchInFirstRoundInWinnerBracket();
 		$counter=0;
 		for($i=0;$i<$numberOfMatchInFirstRound;$i++)
 		{
-			$match= new Match($this->team_ids[$counter], $this->team_ids[$counter+1], 1, "w");
+			$match= new Match($this->team_ids[$counter], $this->team_ids[$counter+1], 1, $bracket);
 			array_push($this->matches,$match);
 			$counter=$counter+2;
 		}
 	}
 	
-	public function populateMatchInSecondRound($indexOfTeamThatReceivedBye)
+	public function populateMatchInFirstRoundInLoserBracket($bracket)
 	{
-		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRound();
-		for($j=0; $j<$numberOfMatchInSecondRound; $j++)
+		$numberOfMatchInFirstRound=$this->calculateNumberOfMatchInFirstRoundInLoserBracket();
+		for($i=0;$i<$numberOfMatchInFirstRound;$i++)
 		{
-			if(isset($this->team_ids[$indexOfTeamThatReceivedBye]))
-			{
-				if(isset($this->team_ids[$indexOfTeamThatReceivedBye+1]))
-				{
-					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], $this->team_ids[$indexOfTeamThatReceivedBye+1], 2, "w");
-					array_push($this->matches,$match);
-				}
-				else
-				{
-					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], null, 2, "w");
-					array_push($this->matches,$match);
-				}
-			}
-			else
-			{
-				$match= new Match(null, null, 2, "w");
-				array_push($this->matches,$match);
-			}
-			$indexOfTeamThatReceivedBye=$indexOfTeamThatReceivedBye+2;
+			$match= new Match(null, null, 1, $bracket);
+			array_push($this->matches,$match);
 		}
 	}
 	
-	public function populateThirdToLastRound()
+	public function populateMatchInSecondRoundInLoserBracket($bracket)
 	{
-		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRound();
+		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRoundInLoserBracket();
+		for($j=0; $j<$numberOfMatchInSecondRound; $j++)
+		{
+				$match= new Match(null, null, 2, $bracket);
+				array_push($this->matches,$match);
+		}
+	}
+	
+	public function populateThirdToLastRoundInLoserBracket($bracket)
+	{
+		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRoundInLoserBracket();
 		$numberOfMatchInThirdToLastRound=$numberOfMatchInSecondRound/2;
-		for($k=3; $k<=($this->calculateNumberOfRounds()); $k++)
+		for($k=3; $k<=($this->calculateNumberOfRoundsInLoserBracket()); $k++)
 		{
 			for($l=0; $l<$numberOfMatchInThirdToLastRound; $l++)
 			{
-				$match= new Match(null, null, $k, "w");
+				$match= new Match(null, null, $k, $bracket);
 				array_push($this->matches,$match);
 			}
 			$numberOfMatchInThirdToLastRound=$numberOfMatchInThirdToLastRound/2;
 		}
 	}
-	
-	// Loser's bracket only
-	public function populateMatchInFirstRoundLB()
+	public function populateMatchInLoserAndWinnerBracket($bracket)
 	{
-		$numberOfMatchInFirstRound=$this->calculateNumberOfMatchInFirstRound();
-		$counter=0;
-		for($i=0;$i<$numberOfMatchInFirstRound;$i++)
-		{
-		//	$match= new Match($this->team_ids[$counter], $this->team_ids[$counter+1], 1, "w");
-			$match= new Match(null, null, 1, "l");
-			array_push($this->matches,$match);
-			$counter=$counter+2;
-		}
+		$match= new Match(null, null, 1, $bracket);
+		array_push($this->matches,$match);
 	}
 	
-	public function populateMatchInSecondRoundLB($indexOfTeamThatReceivedBye)
+	
+	public function populateMatchInSecondRoundInWinnerBracket($indexOfTeamThatReceivedBye, $bracket)
 	{
-		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRound();
+		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRoundInWinnerBracket();
 		for($j=0; $j<$numberOfMatchInSecondRound; $j++)
 		{
 			if(isset($this->team_ids[$indexOfTeamThatReceivedBye]))
 			{
 				if(isset($this->team_ids[$indexOfTeamThatReceivedBye+1]))
 				{
-					//$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], $this->team_ids[$indexOfTeamThatReceivedBye+1], 2, "w");
-					$match= new Match(null, null, 2, "l");
+					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], $this->team_ids[$indexOfTeamThatReceivedBye+1], 2, $bracket);
 					array_push($this->matches,$match);
 				}
 				else
 				{
-					//$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], null, 2, "w");
-					$match= new Match(null, null, 2, "l");
+					$match= new Match($this->team_ids[$indexOfTeamThatReceivedBye], null, 2, $bracket);
 					array_push($this->matches,$match);
 				}
 			}
 			else
 			{
-				$match= new Match(null, null, 2, "l");
+				$match= new Match(null, null, 2, $bracket);
 				array_push($this->matches,$match);
 			}
 			$indexOfTeamThatReceivedBye=$indexOfTeamThatReceivedBye+2;
 		}
+		return $this->getMatches();
 	}
 	
-	public function populateThirdToLastRoundLB()
+	public function populateThirdToLastRoundInWinnerBracket($bracket)
 	{
-		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRound();
+		$numberOfMatchInSecondRound=$this->calculateNumberOfMatchInSecondRoundInWinnerBracket();
 		$numberOfMatchInThirdToLastRound=$numberOfMatchInSecondRound/2;
-		for($k=3; $k<=($this->calculateNumberOfRounds()); $k++)
+		for($k=3; $k<=($this->calculateNumberOfRoundsInWinnerBracket()); $k++)
 		{
 			for($l=0; $l<$numberOfMatchInThirdToLastRound; $l++)
 			{
-				$match= new Match(null, null, $k, "l");
+				$match= new Match(null, null, $k, $bracket);
 				array_push($this->matches,$match);
 			}
 			$numberOfMatchInThirdToLastRound=$numberOfMatchInThirdToLastRound/2;

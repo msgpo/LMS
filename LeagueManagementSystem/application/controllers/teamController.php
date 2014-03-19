@@ -64,13 +64,16 @@ class TeamController extends CI_Controller
 			{
 				$notif=array('notification'=> "A new Team has succesfully created");
 				$this->session->set_userdata($notif);
-				redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+			//	redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+				echo $result;
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('teamController/addTeam/'.$leagueID.'/');
+			//	redirect('teamController/addTeam/'.$leagueID.'/');
+			//	echo $errors;
+				echo implode('<br />', $errors['err']);
 			}
 		}
 		else
@@ -108,13 +111,15 @@ class TeamController extends CI_Controller
 			{
 				$notif=array('notification'=> "A Team has succesfully updated");
 				$this->session->set_userdata($notif);
-				redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+				echo $result;
+				//redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('teamController/editTeam/'.$leagueID.'/'.$team_id.'/');
+				echo implode('<br />', $errors['err']);
+				//redirect('teamController/editTeam/'.$leagueID.'/'.$team_id.'/');
 			}
 		}
 		else
