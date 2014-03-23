@@ -17,7 +17,7 @@ class TeamList extends CI_Model
 	
 	public function insert(Team $team)
 	{
-		$teamname=strtolower($team->getTeamname()); $league_id=$team->getLeague_id();  $coachLastname=strtolower($team->getCoachLastname()); $coachFirstname=strtolower($team->getCoachFirstname());  $coachPhonenumber=strtolower($team->getCoachPhonenumber());  $teamDesc=strtolower($team->getTeamDesc());
+		$teamname=($team->getTeamname()); $league_id=$team->getLeague_id();  $coachLastname=($team->getCoachLastname()); $coachFirstname=($team->getCoachFirstname());  $coachPhonenumber=($team->getCoachPhonenumber());  $teamDesc=($team->getTeamDesc());
 		$this->db->query("INSERT into team(teamname,league_id, coachlastname, coachfirstname, coachphonenumber, teamdesc) VALUES ('$teamname', '$league_id', '$coachLastname', '$coachFirstname', '$coachPhonenumber', '$teamDesc')");
 		return 1;
 	}
@@ -48,12 +48,12 @@ class TeamList extends CI_Model
 	}
 	public function update($team_id, Team $team)
 	{
-		$teamname=(strtolower($team->getTeamname())); 
+		$teamname=(($team->getTeamname())); 
 		$league_id=$team->getLeague_id(); 
-		$coachlastname=(strtolower($team->getCoachLastname())); 
-		$coachfirstname=strtolower($team->getCoachFirstname()); 
-		$coachphonenumber=strtolower($team->getCoachPhonenumber());  
-		$teamdesc=strtolower($team->getTeamDesc());
+		$coachlastname=(($team->getCoachLastname())); 
+		$coachfirstname=($team->getCoachFirstname()); 
+		$coachphonenumber=($team->getCoachPhonenumber());  
+		$teamdesc=($team->getTeamDesc());
 		$this->db->query("UPDATE team set teamname='$teamname',league_id='$league_id',coachlastname='$coachlastname',coachfirstname='$coachfirstname', coachphonenumber='$coachphonenumber', teamdesc='$teamdesc' where team_id=$team_id AND accessible='true'");
 		return 1;
 	}
@@ -125,8 +125,8 @@ class TeamList extends CI_Model
 	
 	public function teamNameExistWithinTheLeague($league_id, $teamname)
 	{
-		$teamname=strtolower($teamname);
-		$result=$this->db->query("SELECT * FROM team where teamname='$teamname' AND league_id= $league_id AND accessible='true'");
+		$teamname=($teamname);
+		$result=$this->db->query("SELECT * FROM team where LOWER(teamname)=LOWER('$teamname') AND league_id= $league_id AND accessible='true'");
 		if($result->num_rows()>0)
 			return TRUE;
 		else
@@ -144,7 +144,7 @@ class TeamList extends CI_Model
 	
 	public function teamnameIsUnchanged($team, $teamname)
 	{
-		if((strtolower($team->getTeamname())==strtolower($teamname)))
+		if((($team->getTeamname())==($teamname)))
 			return TRUE;
 		else
 			return FALSE;

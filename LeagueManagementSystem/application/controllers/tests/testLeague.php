@@ -7,6 +7,7 @@ class TestLeague extends CI_Controller
             parent::__construct();
 			$this->load->library('unit_test');
 			$this->load->model('leagueList','',TRUE);
+			$this->load->model('sportList','',TRUE);
         }
 
         public function index()
@@ -32,7 +33,8 @@ class TestLeague extends CI_Controller
 		
 		function testForValidLeagueCreation()
 		{
-			$league=$this->league->constructor("Palakasan 2018",15,"Double Elimination", "2014-08-14");
+			// $league=$this->league->constructor("Palakasan 2018",15,"Double Elimination", "2014-08-14");
+			$league = new League("Palakasan 2018",15,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result;
 			$expected_result=1;
@@ -42,7 +44,8 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueCreation1()
 		{
-			$league=$this->league->constructor(" ",15,"Double Elimination", "2014-08-14");
+		//	$league=$this->league->constructor(" ",15,"Double Elimination", "2014-08-14");
+			$league=new League(" ",15,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
 			$expected_result="The Leaguename field is required";
@@ -52,7 +55,8 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueCreation2()
 		{
-			$league=$this->league->constructor("Palakasan 2019",15," ", "2014-08-14");
+		//	$league=$this->league->constructor("Palakasan 2019",15," ", "2014-08-14");
+			$league = new League("Palakasan 2019",15," ", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
 			$expected_result="The Tournament type is unspecified";
@@ -63,7 +67,8 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueCreation3()
 		{
-			$league=$this->league->constructor("palakasan 2014",15,"Single Elimination", "2014-08-14");
+		//	$league=$this->league->constructor("palakasan 2014",15,"Single Elimination", "2014-08-14");
+			$league = new League("palakasan 2014",15,"Single Elimination", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
 			$expected_result="league name already exist within the given sport";
@@ -73,7 +78,7 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueCreation4()
 		{
-			$league=$this->league->constructor("Palakasan 2019",20,"Double Elimination", "2014-08-14");
+			$league = new League("Palakasan 2019",20,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
 			$expected_result="Sport id not found";
@@ -83,7 +88,7 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueCreation5()
 		{
-			$league=$this->league->constructor("Palakasan 2019",15,"Double Elimination", "2014/20/10");
+			$league=new League("Palakasan 2019",15,"Double Elimination", "2014/20/10");
 			$result = $this->leagueList->createLeague($league);
 			$test_res=$result[0];
 			$expected_result= "Invalid date syntax. The syntax must be yyyy-mm-dd";
@@ -93,7 +98,7 @@ class TestLeague extends CI_Controller
 		
 		function testForValidLeagueEdition()
 		{
-			$league=$this->league->constructor("Palakasan 2016",15,"double Elimination", "2014-09-10"); //2016 & 2013
+			$league= new League("Palakasan 2016",15,"double Elimination", "2014-09-10"); //2016 & 2013
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result;
 			$expected_result= 1;
@@ -103,7 +108,7 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueEdition1()
 		{
-			$league=$this->league->constructor("Palakasan 2017",15,"double Elimination", "2014-09-10");
+			$league= new League("Palakasan 2017",15,"double Elimination", "2014-09-10");
 			$result = $this->leagueList->editLeague(10000,$league);
 			$test_res=$result[0];
 			$expected_result= "League id not found";
@@ -113,7 +118,7 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueEdition2()
 		{
-			$league=$this->league->constructor(" ",15,"Double Elimination", "2014-08-14");
+			$league=new League(" ",15,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
 			$expected_result="The Leaguename field is required";
@@ -123,7 +128,7 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueEdition3()
 		{
-			$league=$this->league->constructor("Palakasan 2017",15,"myingle Elimination", "2014-08-14");
+			$league=new League("Palakasan 2017",15,"myingle Elimination", "2014-08-14");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
 			$expected_result="The Tournament type is unspecified";
@@ -133,7 +138,7 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueEdition4()
 		{
-			$league=$this->league->constructor("Palakasan 2014",15,"Double Elimination", "2014-08-14");
+			$league=new League("Palakasan 2014",15,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
 			$expected_result="league name already exist within the given sport";
@@ -143,7 +148,7 @@ class TestLeague extends CI_Controller
 		
 		function testForInvalidLeagueEdition5()
 		{
-			$league=$this->league->constructor("Palakasan 2017",20,"Double Elimination", "2014-08-14");
+			$league=new League("Palakasan 2017",20,"Double Elimination", "2014-08-14");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
 			$expected_result="Sport id not found";
@@ -152,7 +157,7 @@ class TestLeague extends CI_Controller
 		}
 		function testForInvalidLeagueEdition6()
 		{
-			$league=$this->league->constructor("Palakasan 2017",15,"Double Elimination", "2014/20/10");
+			$league=new League("Palakasan 2017",15,"Double Elimination", "2014/20/10");
 			$result = $this->leagueList->editLeague(2,$league);
 			$test_res=$result[0];
 			$expected_result= "Invalid date syntax. The syntax must be yyyy-mm-dd";
@@ -178,7 +183,7 @@ class TestLeague extends CI_Controller
 			$this->unit->run($test_res, $expected_result, $test_name);
 		}
 		
-		/**function testIfTheLeaguHasStarted()
+		/**function testIfTheLeagueHasStarted()
 		{
 			$result = $this->leaguelist->checkLeagueIfStartedOrEnded(3);
 			$test_res=$result;

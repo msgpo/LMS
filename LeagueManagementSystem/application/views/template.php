@@ -69,13 +69,20 @@
 	
 	<!-- ========== HEADER SECTION ========== -->
 	<!-- <section id="home" name="home"></section> -->
-	<?php $this->load->view($masthead); ?>
+	<?php //$this->load->view($masthead);
 	
+	$notification=$this->session->userdata('notification');
+	if($notification)
+	{
+		echo'<div class= "panel panel-default"> <div class="panel-body">';
+		echo '<div class= "alert alert-success"><h3>'.$notification.'</h3></div></div></div>';
+		$this->session->unset_userdata('notification'); 
+	}?>
 	<div class="container">
 		<h1><?php echo $headline;?></h1>
 		<?php $this->load->view($include);?>
 	</div>
-	
+	<br/><br/><br/><br/><br/><br/><br/><br/>
 	<!-- ========== FOOTER SECTION ========== -->
 	<section id="contact" name="contact"></section>
 	<div id="f">
@@ -117,7 +124,8 @@
 	
 <!-- Start of modals used by all features -->
 <div id="loading-box" title="Please wait, mate.">
-	<img src="<?php echo base_url(); ?>df_lms_new/img/australia-flag-waving-emoticon-animated.gif" alt="Loading..." />
+	<!--<img src="<?php echo base_url(); ?>df_lms_new/img/australia-flag-waving-emoticon-animated.gif" alt="Loading..." /> -->
+	<img src="<?php echo base_url(); ?>df_lms_new/img/windows8-loading.gif" alt="Loading..." />
 </div>
 
 <!-- End modals here -->

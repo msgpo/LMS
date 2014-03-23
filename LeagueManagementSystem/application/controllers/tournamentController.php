@@ -1,5 +1,4 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
 class TournamentController extends CI_Controller 
 {
 	function __construct()
@@ -10,8 +9,9 @@ class TournamentController extends CI_Controller
 		$this->load->model('credentialModel','',TRUE);
 		$this->load->model('leagueList','',TRUE);
 		$this->load->model('teamList','',TRUE);
-		$this->load->model('singleEliminationTournamentList','',TRUE);
-		$this->load->model('doubleEliminationTournamentList','',TRUE);
+		//$this->load->model('singleEliminationTournamentList','',TRUE);
+		//$this->load->model('doubleEliminationTournamentList','',TRUE);
+		$this->load->model('tournamentList','',TRUE);
 	}
 	
 	function startTournament()
@@ -44,7 +44,11 @@ class TournamentController extends CI_Controller
 					redirect('tournamentController/viewTournament/'.$leagueID.'/');
 				}
 				else
-					echo "Not enough teams";
+				{
+					$notif=array('notification'=> $result);
+					$this->session->set_userdata($notif);
+					redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+				}
 			}
 		}
 		else
@@ -52,8 +56,6 @@ class TournamentController extends CI_Controller
 	}
 	function viewTournament()
 	{
-		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
-		{
 			$leagueID = $this->uri->segment(3);
 			$league=$this->leagueList->getLeagueById($leagueID);
 			if($league->row()->tournamenttype=="single elimination")
@@ -73,13 +75,13 @@ class TournamentController extends CI_Controller
 			$data['title'] = "Donut Fortress League Management System: League Module";
 			$data['include'] = 'tournament/tournament';
 			$data['masthead'] = 'tournament/tournament_masthead';
-			$data['nav'] = 'tournament/tournament_navigation';
+			if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+				$data['nav'] = 'tournament/tournament_navigation';
+			else
+				$data['nav'] = 'initial/initial_navigation';
 			$data['league_id']= $leagueID;
 			$data['sidebar'] = 'tournament/tournament_sidebar';
-			$this->load->view('template', $data);
-		}
-		else
-			redirect('login');		
+			$this->load->view('template', $data);		
 	}
 	
 	function setMatch()
@@ -113,8 +115,8 @@ class TournamentController extends CI_Controller
 	{
 		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$leagueID = $this->uri->segment(3);
-			$matchID = $this->uri->segment(4);
+			$leagueID = $_POST['league_id'];
+			$matchID = $_POST['match_id'];
 			$league=$this->leagueList->getLeagueById($leagueID)->result();
 			if($league[0]->tournamenttype=="single elimination")
 			{
@@ -124,7 +126,6 @@ class TournamentController extends CI_Controller
 			{
 				$result=$this->doubleEliminationTournamentList->updateMatchListing($_POST['winner'], $matchID, $leagueID);
 			}
-			redirect('tournamentController/viewTournament/' . $leagueID);
 		}
 	}
 	
@@ -138,8 +139,23 @@ class TournamentController extends CI_Controller
 	function unstartLeague()
 	{
 		$leagueID = $this->uri->segment(3);
-		$this->singleEliminationTournamentList->resetTournament($leagueID);
+		$this->tournamentList->resetTournament($leagueID);
 		$this->leagueList->setUnstarted($leagueID);
 		redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+	}
+	function unsetMatch()
+	{
+		$leagueID = $this->uri->segment(3);
+		$matchID = $this->uri->segment(4);
+		$league=$this->leagueList->getLeagueById($leagueID)->result();
+		if($league[0]->tournamenttype=="single elimination")
+		{
+			$this->singleEliminationTournamentList->unsetMatch($leagueID,$matchID);
+		}
+		else if($league[0]->tournamenttype=="double elimination")
+		{
+			$result=$this->doubleEliminationTournamentList->unsetMatch($leagueID, $matchID);
+		}
+		redirect('tournamentController/viewTournament/'.$leagueID.'/'.$matchID.'/');
 	}
 }?>

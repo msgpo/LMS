@@ -12,16 +12,13 @@
 						echo 'Undecided Yet';
 				?>
 				</h3>
+				
+				
 				</div>
 			</div>
 		</div><!-- /container -->
 	</div><!-- /w -->
 <?php
-//	if ($winnerQuery->num_rows() > 0)
-//		echo '<p>Winner: ' . ucwords($winnerQuery->row()->teamname) . '</p>';
-	
-
-	// $round=1;
 	echo '<table class="table table-hover">';
 	echo '<tr>';
 	echo '<th>Home</th><th> </th><th>Visitor</th><th>Round</th><th>Bracket</th><th>Options</th>';
@@ -73,13 +70,32 @@
 		if (!$teamAName && !$teamBName)
 			echo '<tr><td>To be determined</td><td> VS </td><td>To be determined</td>';
 		echo '<td>'.$match->roundnumber.'</td>';
-		echo '<td>'.$match->bracket.'</td>';
-		if (($teamAName && $teamBName) && !$match->winner)
-			echo '<td><a class="btn btn-info btn-lg" href="' . base_url() . 'index.php/tournamentController/setMatch/'.$league_id.'/' . $match->match_id . '">Set Winner</a></td>';
+		echo '<td>';
+		if ($match->bracket == "w") echo "Winner's Bracket";
+		else if ($match->bracket == "l") echo "Loser's Bracket";
+		else if ($match->bracket == "f") echo "Championship";
+		else echo "Single Elimination";
+		// echo $match->bracket;
+		echo '</td>';
+		if ((($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))) && (($teamAName && $teamBName) && !$match->winner))
+			echo '<td><button type="button" class="btn btn-primary set-winner" data-swleagueid="'.$league_id.'" data-swmatchid="'.$match->match_id .'" data-swhometeamid="'.$match->team_a .'" data-swhometeamname="'.ucwords($teamAName).'" data-swvisitorteamid="'.$match->team_b .'" data-swvisitorteamname="'.ucwords($teamBName).'">Set Winner</button></td>';
+		else if ((($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))) && (($teamAName && $teamBName) && $match->winner))
+		{
+	//		echo '<td><button type="button" class="btn btn-danger change-outcome" data-swleagueid="'.$league_id.'" data-swmatchid="'.$match->match_id .'">Edit Outcome</button></td>';
+	echo '<td><a href="'.base_url().'index.php/tournamentController/unsetMatch/'.$league_id.'/'.$match->match_id.'/" class="btn btn-danger change-outcome" data-swleagueid="'.$league_id.'" data-swmatchid="'.$match->match_id .'" onclick="return confirm(\'Are you sure You want to unset the winner in this match?\')">Unset Winner</a></td>';
+		} 
 		else
-		//echo '<td><a class="btn btn-danger btn-lg" href="#">Cannot set match</a></td>';
 			echo '<td></td>';
 		echo '</tr>';	
 	}
 	echo '</table>';
 ?>
+<div id="setWinnerDialog" title="Set The Winner">
+	<input type="hidden" id="setwinner-leagueid" name="league_id" value="" />
+	<input type="hidden" id="setwinner-matchid" name="match_id" value="" />
+	<select id="winner">
+	</select>
+	<br />
+	<br />
+	<button type="button" class="btn btn-primary" id="submitSetWinner">Set Winner</button>
+</div>

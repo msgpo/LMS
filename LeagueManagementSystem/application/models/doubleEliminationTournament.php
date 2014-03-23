@@ -12,10 +12,12 @@ class DoubleEliminationTournament extends Tournament
 	{
 		return (2*(parent::getNumberOfTeams())-2);
 	}
+	
 	public function calculateNumberOfMatchesInWinnerBracket()
 	{
 		return(parent::getNumberOfTeams()-1);
 	}
+	
 	public function calculateNumberOfMatchesInLoserBracket()
 	{
 		return(parent::getNumberOfTeams()-2);
@@ -85,12 +87,12 @@ class DoubleEliminationTournament extends Tournament
 	
 	function calculateNumberOfMatchInSecondRoundInLoserBracket()
 	{
-		return (($this->calculateNumberOfByesInLoserBracket()+($this->calculateNumberOfMatchInFirstRoundInLoserBracket()))/2);
+		return (floor(($this->calculateNumberOfByesInLoserBracket()+($this->calculateNumberOfMatchInFirstRoundInLoserBracket()))/2));
 	}
 	
 	public function generateMatches()
 	{
-		if(($this->calculateNumberOfMatches())>1)
+		if((parent::getNumberOfTeams())>2)
 		{
 			$this->populateMatchInWinnerBracket();
 			$this->populateMatchInLoserBracket();
@@ -111,7 +113,6 @@ class DoubleEliminationTournament extends Tournament
 	public function populateMatchInLoserBracket()
 	{
 		$this->populateMatchInFirstRoundInLoserBracket("l");
-		//$indexOfTeamThatReceivedBye=((parent::getNumberOfTeams())-1)-($this->calculateNumberOfByesInLoserBracket());
 		$this->populateMatchInSecondRoundInLoserBracket("l");
 		$this->populateThirdToLastRoundInLoserBracket("l");
 	}

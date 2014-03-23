@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-include_once(APPPATH .'models/TournamentList.php');
+include_once(APPPATH .'models/tournamentList.php');
 class SingleEliminationTournamentList  extends TournamentList 
 {
 	function __construct()
@@ -32,8 +32,7 @@ class SingleEliminationTournamentList  extends TournamentList
 		{
 			$this->insertMatch($match, $league_id);
 		}
-		$this->referenceMatches($league_id);
-		return 1;
+		return $this->referenceMatches($league_id);
 	}
 	
 	
@@ -47,16 +46,46 @@ class SingleEliminationTournamentList  extends TournamentList
 		else
 			return "Match not found";
 	}
-	
 	public function update($winner, $matchDetails)
 	{
 		$matchID=$matchDetails->row()->match_id;
 		$nextMatchID=$matchDetails->row()->nextmatch_id_for_winner;
 		$this->db->query("UPDATE match set winner=$winner WHERE match_id=$matchID and accessible=true");
 		return $this->updateTeamInNextMatch($winner, $nextMatchID);
-		
 	}
 	
+	//Start here
+	public function unsetMatch($league_id, $match_id)
+	{
+		$matchDetails=$this->getMatchDetails($match_id);
+		$this->unsetTeamInNextRound($matchDetails);
+		$this->db->query("UPDATE match SET winner = NULL where match_id=$match_id AND league_id=$league_id");
+	}
+	public function unsetTeamInNextRound($matchDetails)
+	{
+		$matchID=$matchDetails->row()->match_id;
+		$leagueID=$matchDetails->row()->league_id;
+		$winner=$matchDetails->row()->winner;
+		$matches=$this->getNextMatchOfWinner($matchID, $winner, $leagueID);
+		foreach($matches->result() as $match)
+		{
+			$nextMatchID=$match->match_id;
+			if($match->team_a==$winner)
+			{
+				$this->db->query("UPDATE match SET winner=NULL, team_a= NULL WHERE match_id=$nextMatchID");
+			}
+			else if($match->team_b==$winner)
+			{
+				$this->db->query("UPDATE match SET winner=NULL, team_b= NULL WHERE match_id=$nextMatchID");
+			}
+		}
+	}
+	public function getNextMatchOfWinner($matchID, $winner, $league_id)
+	{
+		return $this->db->query("SELECT * FROM match WHERE match_id>$matchID AND league_id=$league_id AND (team_a=$winner OR team_b=$winner)");
+	}
+	
+	//Ends here
 	public function updateTeamInNextMatch($newTeam, $nextMatchID)
 	{
 		if(isset($nextMatchID))
@@ -106,7 +135,6 @@ class SingleEliminationTournamentList  extends TournamentList
 	public function referenceMatches($league_id)
 	{
 		$matchRows= $this->db->query("SELECT * FROM match where league_id=$league_id AND accessible=true AND bracket IS NULL");
-		//$maxRound=$this->getNumberOfRounds($league_id);
 		foreach($matchRows->result() as $row)
 		{
 			$matchID=$row->match_id;
@@ -115,9 +143,16 @@ class SingleEliminationTournamentList  extends TournamentList
 			$matchIDTobeReferenced=$this->matchTobeReferenced($league_id,$nextRound);
 			if(isset($matchIDTobeReferenced))
 			{
-				$this->db->query("UPDATE match SET nextmatch_id_for_winner=$matchIDTobeReferenced WHERE match_id =$matchID AND accessible= true");
+				/**$this->db->query("UPDATE match SET nextmatch_id_for_winner=$matchIDTobeReferenced WHERE match_id =$matchID AND accessible= true");**/
+				$this->setNextMatchForWinnerTeam($matchIDTobeReferenced, $matchID);
 			}
 		}
+		return 1;
+	}
+	
+	function setNextMatchForWinnerTeam($nextMatch_id, $match_id)
+	{
+		$this->db->query("UPDATE match SET nextmatch_id_for_winner=$nextMatch_id WHERE match_id =$match_id AND accessible= true");
 	}
 	
 	function matchTobeReferenced($league_id, $round)
@@ -127,12 +162,35 @@ class SingleEliminationTournamentList  extends TournamentList
 		{
 			$match_id=$match->match_id;
 			$previousRound=$round-1;
-			$result= $this->db->query("SELECT * FROM match where match_id=$match_id AND roundnumber=$previousRound AND accessible= true");
-			if($result->num_rows()<2)
+			$query= $this->db->query("SELECT * FROM match where nextmatch_id_for_winner=$match_id AND roundnumber=$previousRound AND accessible= true");
+			if(($match->team_a==NULL)&&($match->team_b==NULL)&&($query->num_rows()<2))
 			{
 				$resultMatch=$match_id;
 				break;
 			}
+			else if($query->num_rows()<1)
+			{
+				$resultMatch=$match_id;
+				break;
+			}
+			
+			/**if(($match->team_a==NULL)&&($match->team_b==NULL))
+			{
+				if($query->num_rows()<2)
+				{
+					$resultMatch=$match_id;
+					break;
+				}
+			}
+			else
+			{
+				if($query->num_rows()<1)
+				{
+					$resultMatch=$match_id;
+					break;
+				}
+			}**/
+				
 		}
 		if(isset($resultMatch))
 			return $resultMatch;
@@ -172,8 +230,4 @@ class SingleEliminationTournamentList  extends TournamentList
 		return $this->db->query("SELECT match.winner, team.teamname FROM match INNER JOIN team ON (match.winner=team.team_id) WHERE match.roundnumber=$maxround AND match.league_id= $league_id AND match.bracket IS NULL");
 	}
 	
-	public function resetTournament($league_id)
-	{
-		$this->db->query("DELETE from match WHERE league_id = $league_id");
-	}
 }?>

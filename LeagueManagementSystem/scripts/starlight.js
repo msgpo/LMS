@@ -2,6 +2,10 @@ $(function() {
 
 	$("#loading-box").dialog({
 		autoOpen: false,
+<<<<<<< HEAD
+=======
+		width: 55,
+>>>>>>> master
         resizable: false,
 		modal: false
 	});
@@ -32,6 +36,10 @@ $(function() {
         resizable: false,
 		modal: true
 	});
+<<<<<<< HEAD
+=======
+	
+>>>>>>> master
 	$("#removesport-dialog").dialog({
 		autoOpen: false,
 		width: 450,
@@ -99,6 +107,12 @@ $(function() {
 	$("#submitUpdateLeague").button();
 	$("#submitUpdateLeague").button().bind("click", updateLeague);
 	
+<<<<<<< HEAD
+=======
+	$(".reactivate-league").button();
+	$(".reactivate-league").button().bind("click", reactivateLeague);
+	
+>>>>>>> master
 	// Teams
 	$("#addteam-dialog").dialog({
 		autoOpen: false,
@@ -116,12 +130,46 @@ $(function() {
 		modal: true
 	});
 	
+<<<<<<< HEAD
 	$("#add-team").click(showAddTeamForm);
+=======
+	$("#removeteam-dialog").dialog({
+		autoOpen: false,
+		width: 552,
+        height: 355,
+        resizable: true,
+		modal: true
+	});
+	
+	//$("#add-team").click(showAddTeamForm);
+	$("#add-team").button();
+	$("#add-team").button().bind("click", showAddTeamForm)
+>>>>>>> master
 	$("#submitAddTeam").button();
 	$("#submitAddTeam").button().bind("click", addTeam);
 	$(".edit-team").click(showEditTeamForm);
 	$("#submitEditTeam").button();
 	$("#submitEditTeam").button().bind("click", editTeam);
+<<<<<<< HEAD
+=======
+	$(".remove-team").click(showRemoveTeamDialog);
+	$("#submitRemoveTeam").button();
+	$("#submitRemoveTeam").button().bind("click", removeTeam);
+	
+	// Set Winner
+	$("#setWinnerDialog").dialog({
+		autoOpen: false,
+		width: 552,
+        height: 250,
+        resizable: true,
+		modal: true
+	});
+	
+	$(".set-winner").button();
+	$(".set-winner").button().bind("click", showSetWinnerDialog);
+	$("#submitSetWinner").button();
+	$("#submitSetWinner").button().bind("click", submitWinner);
+>>>>>>> master
 	
 	// global
 	$.ajaxSetup({
@@ -137,6 +185,10 @@ $(function() {
 	
 	// unused
 	$("#submitCancelSport").button();
+<<<<<<< HEAD
 	$("#submitCancelSport").button().bind("click",
         cancelSport);
+=======
+	$("#submitCancelSport").button().bind("click", cancelSport);
+>>>>>>> master
 });

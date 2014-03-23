@@ -47,7 +47,7 @@ class SingleEliminationTournament extends Tournament
 	
 	public function generateMatches()
 	{
-		if(($this->calculateNumberOfMatches())>1)
+		if((parent::getNumberOfTeams())>2)
 		{
 			$this->populateMatch();
 			return 1;

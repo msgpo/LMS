@@ -6,7 +6,7 @@
 	foreach($leagueDetails->result() as $ldetails)
 	{
 		echo '<tr>';
-		echo '<td>League Name: </td><td>' . ucwords($ldetails->leaguename) . '</td>';
+		echo '<td>League Name: </td><td>' . ($ldetails->leaguename) . '</td>';
 		echo '</tr>';
 		echo '<tr>';
 		echo '<td>Sport: </td><td>' . $ldetails->sportname . '</td>';
@@ -29,96 +29,19 @@
 		echo '</tr>';
 ?>
 </table>
-<button class="btn btn-success btn-lg update-league" id="updateLeague" data-leagueid="<?php echo $ldetails->league_id; ?>" data-leaguename="<?php echo $ldetails->leaguename; ?>" data-sportid="<?php echo $ldetails->sport_id; ?>" data-tournamenttype="<?php echo $ldetails->tournamenttype; ?>" data-registrationdeadline="<?php echo $ldetails->registrationdeadline; ?>">Edit League Details</button>
-<button class="btn btn-danger btn-lg remove-league" id="removeLeague" data-leagueid="<?php echo $ldetails->league_id; ?>" data-leaguename="<?php echo ucwords($ldetails->leaguename); ?>">Deactivate League</button>
-
-<!-- The script here depends on the ID of the league, mate. So leave it here. -->
-<script>
-/*
-$(document).ready(function()
+<?php
+if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')) && ($ldetails->isstarted == "f" && $ldetails->isended == "f"))
 {
-	
-	// Edit League Details
-	$("button#submiteditLeague<?php echo $ldetails->league_id; ?>").click(function()
-	{
-		$.ajax(
-		{
-			type: "POST",
-			url: "<?php echo base_url(); ?>index.php/leagueController/update",
-			data:
-				{
-					league_id: <?php echo $ldetails->league_id; ?>,
-					leaguename: $("input#leaguename<?php echo $ldetails->league_id; ?>").val(),
-					sport_id: $("input#sport_id<?php echo $ldetails->league_id; ?>").val(),
-					tournamenttype: $("input#tournamenttype<?php echo $ldetails->league_id; ?>").val()
-				}, 
-			success: function(msg){
-		$("#deactivateLeague<?php echo $ldetails->league_id; ?>").modal('hide');
-					//location.reload();
-					window.location = "<?php echo base_url(); ?>index.php/leagueController/index"; 
-			},
-			error: function(){
-				alert("failure");
-			}
-		//	return false;
-		});
-	});
-	
-});
-*/
-</script>
-
-<!-- Edit League -->
-<!--<div class="modal fade" id="editLeague<?php echo $ldetails->league_id; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Edit League Details</h4>
-      </div>
-      <div class="modal-body">
-		<form class="editLeague<?php echo $ldetails->league_id; ?>">
-<p class="nav-header">League Name <input type="text" class="form-control" id="leaguename<?php echo $ldetails->league_id; ?>" name="leaguename" value="<?php echo $ldetails->leaguename; ?>"></p>
-<p class="nav-header">Sport
-<select class="form-control" id="sport_id<?php echo $ldetails->league_id; ?>" name="sport_id">
-<?php
-
-	foreach($sportList->result() as $sport)
-	{
-		echo '<option';
-		if ($ldetails->sport_id == $sport->sport_id) echo ' selected=\"'. $sport->sport_id .'\"';
-		echo ' value="';
-		echo $sport->sport_id;
-		echo '">' . ucwords($sport->sportname);
-		echo '</option>';
-	}
 ?>
-</select></p>
-<p class="nav-header">Tournament Type
-<select class="form-control" id="tournamenttype<?php echo $ldetails->league_id; ?>" name="tournamenttype">
-	<option <?php if($ldetails->tournamenttype == "Unspecified") echo 'selected="Unspecified"'; ?> value="Unspecified">Unspecified</option>
-	<option <?php if($ldetails->tournamenttype == "single elimination") echo 'selected="single elimination"'; ?> value="single elimination">Single Elimination</option>
-	<option <?php if($ldetails->tournamenttype == "double elimination") echo 'selected="double elimination"'; ?> value="double elimination">Double Elimination</option>
-</select></p>
-<p class="nav-header">Date (YYYY-MM-DD) <input class="form-control" type="text" id="datepicker2" name="registrationdeadline" value="<?php echo $ldetails->registrationdeadline; ?>"> </p>
-
-</form>
-<div id="tooltip" class="alert alert-info">
-	<!--<strong>TIP: </strong>Sport names are case insensitive.-->
-<!--</div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="submiteditLeague<?php echo $ldetails->league_id; ?>">Save Changes</button>
-		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	  </div>
-    </div>
-  </div>
-</div>
--->
-
+<button class="btn btn-success btn-lg update-league" id="updateLeague" data-leagueid="<?php echo $ldetails->league_id; ?>" data-leaguename="<?php echo $ldetails->leaguename; ?>" data-sportid="<?php echo $ldetails->sport_id; ?>" data-tournamenttype="<?php echo $ldetails->tournamenttype; ?>" data-registrationdeadline="<?php echo $ldetails->registrationdeadline; ?>">Edit League Details</button>
 <?php
-	}
+}
 ?>
+<button class="btn btn-danger btn-lg remove-league" id="removeLeague" data-leagueid="<?php echo $ldetails->league_id; ?>" data-leaguename="<?php echo ($ldetails->leaguename); ?>">Deactivate League</button>
+
+
+
+
 <!-- End Modals here -->
 <br />
 <h2> Team Listing </h2>
@@ -131,15 +54,27 @@ $(document).ready(function()
 <?php
 		foreach($tList as $team)
 		{
-			echo '<tr>';
+			echo '<tr><td>';
+			echo '<button class="btn btn-success btn-lg edit-team" data-leagueid="' . $league_id . '" data-teamid="'. $team->team_id . '" data-teamname="'. $team->teamname .'" data-teamdesc="'.$team->teamdesc .'" data-coachsurname="'. $team->coachlastname .'" data-coachfirstname="' . $team->coachfirstname . '" data-coachphone="'. $team->coachphonenumber .'">Edit Info</button>';
+			if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')) && ($ldetails->isstarted == "f" && $ldetails->isended == "f"))
+			{
 //			echo '<td><a  class="btn btn-info btn-lg" href="' . base_url() . 'index.php/teamController/editTeam/' .$league_id.'/'. $team->team_id . '">Edit</a>';
-			echo '<td><button class="btn btn-success btn-lg edit-team" data-leagueid="' . $league_id . '" data-teamid="'. $team->team_id . '" data-teamname="'. $team->teamname .'" data-teamdesc="'.$team->teamdesc .'" data-coachsurname="'. $team->coachlastname .'" data-coachfirstname="' . $team->coachfirstname . '" data-coachphone="'. $team->coachphonenumber .'">Edit Info</button>';
-			echo '<a class="btn btn-danger btn-lg" href="' . base_url() . 'index.php/teamController/removeTeam/' .$league_id.'/'. $team->team_id . '" onclick="return confirm(\'Remove this  Team?\')">Remove</a></td><td align="center">' . ucwords($team->teamname) . '</td><td align="center">' . ucwords($team->coachfirstname).' '.ucwords($team->coachlastname). '</td><td align="center">' .ucwords($team->coachphonenumber). '</td><td align="center">' .ucwords($team->teamdesc). '</td>';
+				
+				echo '<button class="btn btn-danger btn-lg remove-team" data-leagueid="' . $league_id . '" data-teamid="'. $team->team_id . '" data-teamname="'. $team->teamname .'">Remove Team</button>';
+			}
+//			echo '<a class="btn btn-danger btn-lg" href="' . base_url() . 'index.php/teamController/removeTeam/' .$league_id.'/'. $team->team_id . '" onclick="return confirm(\'Remove this  Team?\')">Remove</a></td>';
+			echo '<td align="center">' . ($team->teamname) . '</td><td align="center">' . ($team->coachfirstname).' '.($team->coachlastname). '</td><td align="center">' .($team->coachphonenumber). '</td><td align="center">' .($team->teamdesc). '</td>';
 			echo '</tr>';
+
 		}
+echo '</tbody></table>';
+if ($ldetails->isstarted == "f" && ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username'))))
+echo '<button class="btn btn-primary" id="add-team" data-leagueid="'.$league_id.'">Add Team</button>';
 ?>
-</tbody>
-</table>
+
+<?php
+	}
+?>
 </div>
 
 <div id="removeleague-dialog">
@@ -162,7 +97,7 @@ if ($sportList)
 	{
 		echo '<option value="';
 		echo $sport->sport_id;
-		echo '">' . ucwords($sport->sportname);
+		echo '">' . ($sport->sportname);
 		echo '</option>';
 	}
 }
@@ -170,9 +105,9 @@ if ($sportList)
 </select></td></tr>
 <tr><td>Tournament Type</td>
 <td><select id="edittournamenttype" name="tournamenttype">
-	<option value="Unspecified">Unspecified</option>
-	<option value="Single Elimination">Single Elimination</option>
-	<option value="Double Elimination">Double Elimination</option>
+	<option value="unspecified">Unspecified</option>
+	<option value="single elimination">Single Elimination</option>
+	<option value="double elimination">Double Elimination</option>
 </select></td></tr>
 <tr><td>Date </td>
 <td><input type="text" id="datepicker2" name="registrationdeadline" value=""></td></tr>
@@ -196,4 +131,14 @@ if ($sportList)
 	<div id="tooltipEditTeam">
 	</div>
 	<button type="button" class="btn btn-primary" id="submitEditTeam">Edit Team</button>
+</div>
+
+<div id="removeteam-dialog" title="Remove this Team?">
+	<input type="hidden" id="removeteam-teamid" name="team_id" value="" />
+	<input type="hidden" id="removeteam-leagueid" name="league_id" value="" />
+	<input type="hidden" id="removeteam-teamname" name="teamname" value="" />
+	<div id="tooltipRemoveTeam" class="alert alert-warning">
+	</div>
+	<button type="button" class="btn btn-danger" id="submitRemoveTeam">Remove Team</button>
+	<!--<button type="button" class="btn btn-default" id="submitCancel">Cancel</button>-->
 </div>

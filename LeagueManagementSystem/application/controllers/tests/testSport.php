@@ -28,7 +28,8 @@ class TestSport extends CI_Controller
         }
 		function testForValidAddSport()
 		{
-			$result = $this->sportList->addSport("basketball");
+			$sport = new Sport("Archery");
+			$result= $this->sportList->addSport($sport);
 			$test_res=$result;
 			$expected_result=1; 
 			$test_name = 'Valid Sport name for creating Sport';
@@ -37,8 +38,9 @@ class TestSport extends CI_Controller
 		
 		function testForInvalidAddSport1()
 		{
-			$result = $this->sportList->addSport("volleyball");
-			$test_res = $result;
+			$sport = new Sport("volleyball");
+			$result= $this->sportList->addSport($sport);
+			$test_res=$result;
 			$expected_result= "The Sportname already exist"; 
             $test_name = 'Invalid Sport name for creating Sport (Sport Name Already Exist)'; 
             $this->unit->run($test_res, $expected_result, $test_name);
@@ -46,7 +48,8 @@ class TestSport extends CI_Controller
         
 		function testForInvalidAddSport2()
 		{
-			$result = $this->sportList->addSport(" ");
+			$sport = new Sport(" ");
+			$result= $this->sportList->addSport($sport);
 			$test_res=$result;
 			$expected_result= "The Sportname field is required"; 
 			$test_name = 'Invalid Sport name for creating Sport (Blank Sport Name)';
@@ -55,7 +58,8 @@ class TestSport extends CI_Controller
 		
 		function testForValidEditionOfSport()
 		{
-			$result = $this->sportList->editSport(1,"archery");
+			$sport = new Sport("Bowling");
+			$result = $this->sportList->editSport(1,$sport);
 			$test_res=$result;
 			$expected_result=1; 
 			$test_name = 'Valid Edition of Sport';
@@ -64,7 +68,8 @@ class TestSport extends CI_Controller
 		
 		function testForInvalidEditionOfSport1()
 		{
-			$result = $this->sportList->editSport(4,"bowling");
+			$sport = new Sport("Swimming");
+			$result = $this->sportList->editSport(1000,$sport);
 			$test_res=$result;
 			$expected_result= "Sport id not found"; 
 			$test_name = 'Invalid Edition of Sport(SportName doesnt exist in database)';
@@ -72,7 +77,8 @@ class TestSport extends CI_Controller
 		}
 		function testForInvalidEditionOfSport2()
 		{
-			$result = $this->sportList->editSport(2,"volleyball");
+			$sport = new Sport("Archery");
+			$result = $this->sportList->editSport(2,$sport);
 			$test_res=$result;
 			$expected_result= "The Sportname already exist"; 
 			$test_name = 'Invalid Edition of Sport(The new Sportname already exist)';
@@ -80,7 +86,8 @@ class TestSport extends CI_Controller
 		}
 		function testForInvalidEditionOfSport3()
 		{
-			$result = $this->sportList->editSport(2," ");
+			$sport = new Sport(" ");
+			$result = $this->sportList->editSport(2,$sport);
 			$test_res=$result;
 			$expected_result= "The Sportname field is required";
 			$test_name = 'Invalid Edition of Sport(The new sportname is blank)';
@@ -89,7 +96,7 @@ class TestSport extends CI_Controller
 		
 		function testForSuccessDisablingOfSport()
 		{
-			$result = $this->sportList->disableSport(2);
+			$result = $this->sportList->disableSport(1);
 			$test_res=$result;
 			$expected_result=1; 
 			$test_name = 'Success Deletion of Sport(Sport id Exists in database)';
@@ -99,7 +106,7 @@ class TestSport extends CI_Controller
 		
 		function testForFailDisablingOfSport()
 		{
-			$result = $this->sportList->disableSport(4);
+			$result = $this->sportList->disableSport(1000);
 			$test_res=$result;
 			$expected_result= "Sport id not found";
 			$test_name = 'Failed Deletion of Sport(Sport id doesnt exist in database)';

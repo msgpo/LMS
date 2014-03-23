@@ -19,9 +19,11 @@
 
 <div id="login-dialog">
 <p class="notiferror">Invalid username or password.</p>
-<img alt="Donut Fortress LMS logo" src="<?php echo base_url(); ?>df_lms/images/df_lms_backdrop.png" />
-<input class="input-block-level" id="username" placeholder="Username" autocomplete="off" type="text" name="username" /><br />
-<input class="input-block-level" id="password" placeholder="Password" type="password" name="password" />
+<img alt="Donut Fortress LMS logo" src="<?php echo base_url(); ?>df_lms/images/df_lms_backdrop.png" /><br />
+<label for="username">Username</label>
+<input class="form-control" id="username" autocomplete="off" type="text" name="username" />
+<label for="password">Password</label>
+<input class="form-control" id="password" type="password" name="password" />
 <button type="submit" id="submitLogin" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover" role="button"><span class="ui-button-text">Login </span></button>
 </div>
 

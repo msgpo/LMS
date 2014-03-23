@@ -6,8 +6,7 @@ class TestAuthentication extends CI_Controller
         {
                 parent::__construct();
                 $this->load->library('unit_test');
-				$this->load->model('account','',TRUE);
-				$this->load->model('authentication','',TRUE);
+				$this->load->model('credentialModel','',TRUE);
         }
 		/* In this test, the valid values of the credentials are the following:
          *	 	Username: myUsername
@@ -26,18 +25,18 @@ class TestAuthentication extends CI_Controller
         }
 		 function testCorrectCredentials()
         {
-			$account=$this->account->constructor("myUsername","myPassword");
-			$result=$this->authentication->login($account);
+			$account=new Account("myUsername","myPassword");
+			$result=$this->credentialModel->login($account);
 			$test_res = $result; 
-			$expected_result =null;
+			$expected_result =1;
 			$test_name = 'Correct Credentials';
 			$this->unit->run($test_res, $expected_result, $test_name); 
         }
 		
 		function testIncorrectCredentials()
         {
-			$account=$this->account->constructor("IncorrectUsername","IncorrectPassword");
-			$result=$this->authentication->login($account);
+			$account=new Account("IncorrectUsername","IncorrectPassword");
+			$result=$this->credentialModel->login($account);
 			$test_res = $result; 
 			$expected_result ="Invalid Username or Password";
 			$test_name = 'Incorrect Credentials';
@@ -46,8 +45,8 @@ class TestAuthentication extends CI_Controller
 		
 		 function testBlankUsername()
         {
-			$account=$this->account->constructor("","CorrectOrInCorrectPassword");
-			$result=$this->authentication->login($account);
+			$account=new Account("","CorrectOrInCorrectPassword");
+			$result=$this->credentialModel->login($account);
 			$test_res = $result; 
 			$expected_result = "Invalid Username or Password";
 			$test_name = 'Blank Username';
@@ -55,8 +54,8 @@ class TestAuthentication extends CI_Controller
         }
 		function testBlankPassword()
         {
-			$account=$this->account->constructor("CorrectOrInCorrectUsername","");
-			$result=$this->authentication->login($account);
+			$account=new Account("CorrectOrInCorrectUsername","");
+			$result=$this->credentialModel->login($account);
 			$test_res = $result; 
 			$expected_result = "Invalid Username or Password";
 			$test_name = 'Blank Password';

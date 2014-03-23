@@ -127,14 +127,15 @@ class TeamController extends CI_Controller
 	}
 	function removeTeam()
 	{
-		$leagueID = $this->uri->segment(3);
-		$team_id = $this->uri->segment(4);
-		$result=$this->teamList->removeTeam($team_id);
+		//$leagueID = $this->uri->segment(3);
+		//$team_id = $this->uri->segment(4);
+		$result=$this->teamList->removeTeam($_POST['team_id']);
 		if($result==1)
 		{
 			$notif=array('notification'=> "A Team has succesfully removed");
 			$this->session->set_userdata($notif);
-			redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
+			echo $result;
+			//redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
 		}
 	}
 }

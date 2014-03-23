@@ -1,5 +1,10 @@
 <h1 class="logo">Options</h1>
-<a href="<?php echo base_url(); ?>index.php/leagueController/index" >View All Leagues</a>
+<a href="<?php echo base_url(); ?>index.php/leagueController/index" >View Active Leagues</a>
+<a href="<?php echo base_url(); ?>index.php/leagueController/deactivatedLeagueList" >View Deactivated Leagues</a>
+<?php
+if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+{
+?>
 <a href="#" id="create-league">Create New League</a>
 
 <div id="addleague-dialog" title="Create League">
@@ -34,3 +39,6 @@ if ($sportList)
 </div>
 <button type="button" class="btn btn-primary" id="submitCreateLeague">Create League</button>
 </div>
+<?php
+}
+?>

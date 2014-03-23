@@ -8,7 +8,7 @@
 		foreach ($sports_query->result() as $sport)
 		{
 			echo '<tr>';
-			echo '<td>' . ucwords($sport->sportname) . '</td>';
+			echo '<td>' . $sport->sportname . '</td>';
 			echo '<td><button class="btn btn-info btn-lg update-sport" id="updateSport" data-sportid="'. $sport->sport_id .'" data-sportname="'. $sport->sportname .'">Edit</button>';
 		//	echo '<button class="btn btn-danger btn-lg" id="removeSport'.$sport->sport_id.'" data-toggle="modal" data-target="#removeSport'.$sport->sport_id.'">Remove</button>';
 			echo '<button class="btn btn-danger btn-lg remove-sport" id="removeSport" data-sportid="'.$sport->sport_id.'" data-sportname="'. $sport->sportname .'">Remove</button>';

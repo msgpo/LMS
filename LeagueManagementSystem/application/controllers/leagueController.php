@@ -18,8 +18,7 @@ class LeagueController extends CI_Controller
 	
 	public function index()
 	{
-		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
-		{
+
 			if (isset($_POST['leaguename']))
 				$leagues_qry = $this->leagueList->searchLeague(strtolower($_POST['leaguename']));
 			else
@@ -27,22 +26,32 @@ class LeagueController extends CI_Controller
 			$data['leagues_query'] = $leagues_qry;
 			$sportList = $this->sportList->getSportList();
 			$data['sportList'] = $sportList;
-			$data['title'] = "Donut Fortress League Management System: League Module";
-			$data['headline'] = "League Listing";
-			$data['include'] = 'league/league_index';
-			$data['masthead'] = 'league/league_masthead';
-			$data['nav'] = 'league/league_navigation';
-			$data['sidebar'] = 'league/league_sidebar';
-			$this->load->view('template', $data);
-		}
+			if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+			{
+				// League Manager POV
+				$data['title'] = "Donut Fortress League Management System: League Module";
+				$data['headline'] = "League Listing";
+				$data['include'] = 'league/league_index';
+				$data['masthead'] = 'league/league_masthead';
+				$data['nav'] = 'league/league_navigation';
+				$data['sidebar'] = 'league/league_sidebar';
+			}
 			else
-				redirect('login');
+			{
+				// Guest POV
+				$data['title'] = "Donut Fortress League Management System: Leagues";
+				$data['headline'] = "League Listing";
+				$data['include'] = 'league/league_index';
+				$data['masthead'] = 'league/league_masthead';
+				$data['nav'] = 'initial/initial_navigation';
+				$data['sidebar'] = 'league/league_sidebar';
+			}
+			$this->load->view('template', $data);
 	}
 	
 	function viewLeagueInfo()
 	{
-		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
-		{
+
 			$leagueID = $this->uri->segment(3);
 			$leagueDetails = $this->leagueList->getLeagueById($leagueID);
 			$data['leagueDetails'] = $leagueDetails;
@@ -54,13 +63,17 @@ class LeagueController extends CI_Controller
 			$data['headline'] = "League Information";
 			$data['include'] = 'league/league_info';
 			$data['masthead'] = 'league/league_masthead';
-			$data['nav'] = 'league/league_navigation';
+			if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+			{
+				$data['nav'] = 'league/league_navigation';
+			}
+			else
+			{
+				$data['nav'] = 'initial/initial_navigation';
+			}
 			$data['sidebar'] = 'league/league_sidebar2';
 			$data['tList']=$this->teamList->getAllTeamsByLeague_id($leagueID)->result();
 			$this->load->view('template', $data);
-		}
-		else
-			redirect('login');
 	}
 	
 	function generateLeague()
@@ -76,10 +89,9 @@ class LeagueController extends CI_Controller
 			$data['nav'] = 'league/league_navigation';
 			$data['sidebar'] = 'league/league_sidebar';
 			$this->load->view('template', $data);
-			$this->session->unset_userdata('err');
 		}
 		else
-			redirect('login');
+			redirect('initial');
 	}
 	function create()
 	{
@@ -92,19 +104,16 @@ class LeagueController extends CI_Controller
 				$notif=array('notification'=> "A new League has succesfully created");
 				$this->session->set_userdata($notif);
 				echo $result;
-				//redirect('leagueController/index');
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				//echo $errors;
 				echo implode('<br />', $errors['err']);
-				//redirect('leagueController/generateLeague');
 			}
 		}
 		else
-			redirect('login');
+			redirect('initial');
 	}
 	
 	function editLeague()
@@ -135,7 +144,7 @@ class LeagueController extends CI_Controller
 			}
 		}
 		else
-			redirect('login');
+			redirect('initial');
 	}
 
 	function update()
@@ -150,14 +159,12 @@ class LeagueController extends CI_Controller
 				$notif=array('notification'=> "The League Details has succesfully updated");
 				$this->session->set_userdata($notif);
 				echo $result;
-				//redirect('leagueController/viewLeagueInfo/'.$leagueID);
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				echo $errors;
-				//redirect('leagueController/editLeague/'.$leagueID.'/');
+				echo implode('<br />', $errors['err']);
 			}
 		}
 	}
@@ -166,17 +173,56 @@ class LeagueController extends CI_Controller
 	{
 		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-		//	$leagueID = $this->uri->segment(3);
 			$result= $this->leagueList->deactivateLeague($_POST['league_id']);
-			echo $result;
-		/*	if($result==1)
+			if($result==1)
 			{
 				$notif=array('notification'=> "A League has succesfully deactivated");
 				$this->session->set_userdata($notif);
-				redirect('leagueController/index');
-			} */
+				echo $result;
+			}
 		}
 		else
-			redirect('login');
+			redirect('initial');
+	}
+	
+	function deactivatedLeagueList()
+	{
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+		{
+			$deactLeagues_qry = $this->leagueList->getDeactivatedLeagues();
+			$data['deactLeagues_query'] = $deactLeagues_qry;
+			$data['title'] = "Donut Fortress League Management System: League Module";
+			$data['headline'] = "Deactivated Leagues";
+			$data['include'] = 'league/league_deactivated';
+			$data['masthead'] = 'league/league_masthead';
+			$data['nav'] = 'league/league_navigation';
+			$data['sidebar'] = 'league/league_sidebar';
+			$this->load->view('template', $data);
+			$this->session->unset_userdata('err');
+		}
+		else
+			redirect('initial');
+	}
+	
+	function reactivateLeague()
+	{
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+		{
+			$result= $this->leagueList->reactivateLeague($_POST['league_id']);
+			if($result==1)
+			{
+				$notif=array('notification'=> "A League has succesfully reactivated");
+				$this->session->set_userdata($notif);
+				echo $result;
+			}
+		}
+		else
+			redirect('initial');
+	}
+	
+	public function startLeague()
+	{
+		$leagueID = $this->uri->segment(3);
+		redirect('tournamentController/startTournament/'.$leagueID);
 	}
 }

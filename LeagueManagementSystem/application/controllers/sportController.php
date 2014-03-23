@@ -53,7 +53,7 @@ class SportController extends CI_Controller
 		$this->load->view('template', $data);
 	}
 	
-	function addSport()
+	/**function addSport()
 	{	
 		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
@@ -68,7 +68,7 @@ class SportController extends CI_Controller
 		}
 		else
 			redirect('login');
-	}
+	}**/
 	
 	function create()
 	{
@@ -78,11 +78,8 @@ class SportController extends CI_Controller
 			$result=$this->sportList->addSport($sport);
 			if($result==1)
 			{
-				//$notif= "A new Sport has succesfully created";
-				//$notif=array('notification'=> "A new Sport has succesfully created");
-				//$this->session->set_userdata($notif);
-				//echo $notif;
-				$this->session->unset_userdata('err');
+				$notif=array('notification'=> "A new Sport has been succesfully created");
+				$this->session->set_userdata($notif);
 				echo $result;
 			}
 			else
@@ -128,14 +125,12 @@ class SportController extends CI_Controller
 				$notif=array('notification'=> "A Sport has succesfully updated");
 				$this->session->set_userdata($notif);
 				echo $result;
-			//	redirect('sportController/sportlist');
 			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
 				echo $errors['err'];
-			//	redirect('sportController/edit/'.$_POST['sport_id'].'/');
 			}
 		}
 		else
@@ -148,12 +143,14 @@ class SportController extends CI_Controller
 		$sport_id = $_POST['sport_id'];
 		$result= $this->sportList->disableSport($sport_id);
 		if($result==1)
+		{
 			$notif=array('notification'=> "A Sport has succesfully removed");
+			$this->session->set_userdata($notif);
+			echo $result;
+		}
 		else
-			$notif=array('notification'=> $result);
-		$this->session->set_userdata($notif);
-		//redirect('sportController/index');
-		echo $result;
+			echo $result;
+			//$notif=array('notification'=> $result);
 	}
 }
 ?>

@@ -2,7 +2,7 @@
 include_once(APPPATH .'models/league.php');
 class LeagueList extends CI_Model 
 {
-	private $tournaments=array('a'=>"single elimination", 'b'=>"double elimination", 'c'=>"round robin");
+	private $tournaments=array('a'=>"single elimination", 'b'=>"double elimination");
 	function __construct()
 	{
 		parent::__construct();
@@ -19,7 +19,7 @@ class LeagueList extends CI_Model
 	
 	public function insert(League $league)
 	{
-		$leaguename=strtolower($league->getLeaguename()); $sport_id=$league->getSport_id(); $tournamentType=strtolower($league->getTournamentType()); $registrationDeadline=$league->getRegistrationDeadline();
+		$leaguename=($league->getLeaguename()); $sport_id=$league->getSport_id(); $tournamentType=strtolower($league->getTournamentType()); $registrationDeadline=$league->getRegistrationDeadline();
 		$this->db->query("INSERT into league(leaguename,sport_id,tournamenttype,registrationdeadline) VALUES ('$leaguename','$sport_id','$tournamentType','$registrationDeadline')");
 		return 1;
 	}
@@ -51,7 +51,7 @@ class LeagueList extends CI_Model
 	
 	public function update($league_id, League $league)
 	{
-		$leaguename=strtolower($league->getLeaguename()); $sport_id=$league->getSport_id(); $tournamentType=strtolower($league->getTournamentType()); $registrationDeadline=$league->getRegistrationDeadline();
+		$leaguename=($league->getLeaguename()); $sport_id=$league->getSport_id(); $tournamentType=strtolower($league->getTournamentType()); $registrationDeadline=$league->getRegistrationDeadline();
 		$this->db->query("UPDATE league set leaguename='$leaguename',sport_id='$sport_id',tournamenttype='$tournamentType',registrationdeadline='$registrationDeadline' where league_id=$league_id AND accessible='true'");
 		return 1;
 	}
@@ -133,8 +133,8 @@ class LeagueList extends CI_Model
 		
 	public function leaguenameExistWithinTheSport($leaguename, $sport_id)
 	{
-		$leaguename=strtolower($leaguename);
-		$result=$this->db->query("SELECT * FROM league where leaguename='$leaguename' AND sport_id= $sport_id AND accessible='true'");
+		$leaguename=($leaguename);
+		$result=$this->db->query("SELECT * FROM league where LOWER(leaguename)=LOWER('$leaguename') AND sport_id= $sport_id AND accessible='true'");
 		if($result->num_rows()>0)
 			return TRUE;
 		else
@@ -159,7 +159,7 @@ class LeagueList extends CI_Model
 		
 	public function leaguenameandSportIsUnchanged($league,$leaguename,$sport_id)
 	{
-		if((strtolower($league->getLeaguename())==strtolower($leaguename))&&($league->getSport_id()==$sport_id))
+		if((($league->getLeaguename())==($leaguename))&&($league->getSport_id()==$sport_id))
 			return TRUE;
 		else
 			return FALSE;
@@ -209,7 +209,7 @@ class LeagueList extends CI_Model
 	}
 	public function getAllLeagues()
 	{
-		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true ORDER BY league.league_id");
+		return $this->db->query("SELECT sport.sportname, league.* FROM league INNER JOIN sport USING (sport_id) WHERE league.accessible = true ORDER BY league.leaguename");
 	}
 	function setStarted($league_id)
 	{
@@ -221,4 +221,19 @@ class LeagueList extends CI_Model
 		$this->db->query("UPDATE league SET isstarted = false WHERE league_id = $league_id"); 
 	}
 	
+	function getDeactivatedLeagues()
+	{
+		return $this->db->query("SELECT * FROM league WHERE league.accessible = false ORDER BY leaguename");
+	}
+	
+	public function reactivateLeague($league_id)
+	{
+		if($this->getLeagueById($league_id)->num_rows()>0)
+		{
+			$this->db->query("UPDATE league SET accessible='true' where league_id=$league_id");
+			return 1;
+		}
+		else
+			return "League id not Found";
+	}
 }?>

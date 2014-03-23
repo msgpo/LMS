@@ -1,4 +1,9 @@
-<a href="<?php echo base_url(); ?>index.php/leagueController/index" >View All Leagues</a>
+<a href="<?php echo base_url(); ?>index.php/leagueController/index" >View Active Leagues</a>
+<a href="<?php echo base_url(); ?>index.php/leagueController/deactivatedLeagueList" >View Deactivated Leagues</a>
+<?php
+if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+{
+?>
 <a href="#" id="create-league">Create New League</a>
 
 <div id="addleague-dialog" title="Create League">
@@ -34,7 +39,9 @@ if ($sportList)
 <button type="button" class="btn btn-primary" id="submitCreateLeague">Create League</button>
 </div>
 
-
+<?php 
+}
+?>
 
 <?php
 foreach($leagueDetails->result() as $ldetails)
@@ -43,19 +50,17 @@ foreach($leagueDetails->result() as $ldetails)
 	$league_id = $ldetails->league_id;
 	$lname = $ldetails->leaguename;
 }
-?>
-<!--
-<a href="#" id="updateLeague<?php echo $league_id; ?>" data-toggle="modal" data-target="#editLeague<?php echo $league_id; ?>">Edit League Details</a>
-<a href="#" id="removeLeague<?php echo $league_id; ?>" data-toggle="modal" data-target="#deactivateLeague<?php echo $league_id; ?>">Deactivate League</a>-->
 
-<?php
+
+if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+{
 	foreach($leagueDetails->result() as $ldet)
 	{
 		if ($ldet->isstarted == "f" && $ldet->isended == "f")
 		{
 		//	echo '<a href="'.base_url().'index.php/teamController/addTeam/'.$id.'">Add a new Team</a>';	
-			echo '<a href="#" id="add-team" data-leagueid="'.$id.'">Add Team</a>';
-			echo '<a href="'. base_url().'index.php/tournamentController/startTournament/'.$id.'">Start League</a>';
+		//	echo '<a href="#" id="add-team" data-leagueid="'.$id.'">Add Team</a>';
+			echo '<a href="'. base_url().'index.php/leagueController/startLeague/'.$id.'">Start League</a>';
 		}
 		else
 		{
@@ -63,6 +68,11 @@ foreach($leagueDetails->result() as $ldetails)
 			echo '<a href="'.base_url().'index.php/tournamentController/unstartLeague/'.$id.'" onclick="return confirm(\'Are you sure you want to unstart this league?\')"> Unstart League</a>';
 		}
 	}
+}
+else
+{
+	echo '<a href="' . base_url() . 'index.php/tournamentController/viewTournament/' . $id . '">View Tournament</a>';
+}
 ?>
 
 <div id="addteam-dialog" title="Add a New Team">
