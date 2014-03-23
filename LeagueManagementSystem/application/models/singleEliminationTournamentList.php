@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-include_once(APPPATH .'models/tournamentList.php');
+include_once(APPPATH .'models/TournamentList.php');
 class SingleEliminationTournamentList  extends TournamentList 
 {
 	function __construct()
@@ -230,4 +230,8 @@ class SingleEliminationTournamentList  extends TournamentList
 		return $this->db->query("SELECT match.winner, team.teamname FROM match INNER JOIN team ON (match.winner=team.team_id) WHERE match.roundnumber=$maxround AND match.league_id= $league_id AND match.bracket IS NULL");
 	}
 	
+	public function resetTournament($league_id)
+	{
+		$this->db->query("UPDATE match set accessible=false WHERE league_id = $league_id");
+	}
 }?>

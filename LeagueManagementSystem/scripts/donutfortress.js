@@ -49,21 +49,10 @@ function addSport()
 			success: function(msg){
 				if (msg == 1)
 				{
-<<<<<<< HEAD
-					$("div#tooltip").removeClass().addClass("alert alert-success");
-					$("div#tooltip").html('<strong>SUCCESS: </strong>Sport added.');
-				//	$("#addSport").modal('hide');
-					location.reload();
-				}
-				else
-				{
-					// alert(msg);
-=======
 					window.location = baseurl + "/index.php/sportController/index";
 				}
 				else
 				{
->>>>>>> master
 					if(!($("div#tooltip").hasClass("alert alert-danger")))
 					{
 						$("div#tooltip").removeClass().addClass("alert alert-danger");
@@ -94,14 +83,7 @@ function editSport()
 		{
 			if (msg == 1)
 			{
-<<<<<<< HEAD
-				$("div#tooltipEdit").removeClass().addClass("alert alert-success");
-				$("div#tooltipEdit").html('<strong>SUCCESS: </strong>Sport name successfully edited.');
-			//	$("#addSport").modal('hide');
-				location.reload();
-=======
 				window.location = baseurl + "/index.php/sportController/index";
->>>>>>> master
 			}
 			else
 			{
@@ -135,14 +117,7 @@ function removeSport()
 		{
 			if (msg == 1)
 			{
-<<<<<<< HEAD
-				$("div#tooltipRemove").removeClass().addClass("alert alert-success");
-				$("div#tooltipRemove").html('<strong>SUCCESS: </strong>Sport successfully removed.');
-			//	$("#addSport").modal('hide');
-				location.reload();
-=======
 				window.location = baseurl + "/index.php/sportController/index";
->>>>>>> master
 			}
 			else
 			{
@@ -191,13 +166,8 @@ function showRemoveSportDialog()
 function showAddLeagueForm()
 {
 	$("#leaguename").val("");
-<<<<<<< HEAD
-	$("#sportid").val("");
-	$("#tournamenttype").val("");
-=======
 //	$("#sportid").val("");
 //	$("#tournamenttype").val("");
->>>>>>> master
 	$("#datepicker").val("");
 	$("div#tooltipCreateLeague").removeClass();
 	$("div#tooltipCreateLeague").html("");
@@ -224,21 +194,10 @@ function createLeague()
 			success: function(msg){
 				if (msg == 1)
 				{
-<<<<<<< HEAD
-					$("div#tooltipCreateLeague").removeClass().addClass("alert alert-success");
-					$("div#tooltipCreateLeague").html('<strong>SUCCESS: </strong>A league has been created.');
-				//	$("#addSport").modal('hide');
-					location.reload();
-				}
-				else
-				{
-					// alert(msg);
-=======
 					window.location = baseurl + "/index.php/leagueController/index";
 				}
 				else
 				{
->>>>>>> master
 					if(!($("div#tooltipCreateLeague").hasClass("alert alert-danger")))
 					{
 						$("div#tooltipCreateLeague").removeClass().addClass("alert alert-danger");
@@ -278,13 +237,6 @@ function removeLeague()
 			success: function(msg){
 				if (msg == 1)
 				{
-<<<<<<< HEAD
-					$("div#tooltipRemoveLeague").removeClass().addClass("alert alert-success");
-					$("div#tooltipRemoveLeague").html('<strong>SUCCESS: </strong>A league has been deactivated.');
-				//	$("#addSport").modal('hide');
-				//	location.reload();
-=======
->>>>>>> master
 					window.location = baseurl + "/index.php/leagueController/index";
 				}
 				else
@@ -314,13 +266,8 @@ function showUpdateLeagueForm()
 	$("#editleague-dialog").dialog("open");
 	$("#editleagueid").val(leagueid);
 	$("#editleaguename").val(leaguename);
-<<<<<<< HEAD
-	$("#editsportid option:selected").val(sportID);
-	$("#edittournament option:selected").val(tournament);
-=======
 	$("#editsportid").val(sportID);
 	$("#edittournamenttype").val(tournament);
->>>>>>> master
 	$("#datepicker2").val(regdeadline);
 }
 
@@ -329,11 +276,7 @@ function updateLeague()
 	 var leagueID = $("#editleagueid").val();
 	 var leaguename = $("#editleaguename").val();
 	var sportID = $("#editsportid option:selected").val();
-<<<<<<< HEAD
-	var tournamenttype = $("#edittournament option:selected").val();
-=======
 	var tournamenttype = $("#edittournamenttype option:selected").val();
->>>>>>> master
 	var regDeadline = $("#datepicker2").val();
 	
 	$.ajax({
@@ -349,15 +292,7 @@ function updateLeague()
 			success: function(msg){
 				if (msg == 1)
 				{
-<<<<<<< HEAD
-					$("div#tooltipEditLeague").removeClass().addClass("alert alert-success");
-					$("div#tooltipEditLeague").html('<strong>SUCCESS: </strong>A league has been updated.');
-				//	$("#addSport").modal('hide');
-				//	location.reload();
-					window.location = baseurl + "/index.php/leagueController/index";
-=======
 					window.location = baseurl + "/index.php/leagueController/viewLeagueInfo/"+leagueID;
->>>>>>> master
 				}
 				else
 				{
@@ -376,8 +311,6 @@ function updateLeague()
 		});
 }
 
-<<<<<<< HEAD
-=======
 function reactivateLeague()
 {
 	 var leagueID = $(this).attr("data-reactleagueid");
@@ -397,7 +330,6 @@ function reactivateLeague()
 		});
 }
 
->>>>>>> master
 // Teams
 
 function showAddTeamForm()
@@ -430,13 +362,6 @@ function addTeam()
 			success: function(msg){
 				if (msg == 1)
 				{
-<<<<<<< HEAD
-					$("div#tooltipAddTeam").removeClass().addClass("alert alert-success");
-					$("div#tooltipAddTeam").html('<strong>SUCCESS: </strong>A new team has been created.');
-				//	$("#addSport").modal('hide');
-				//	location.reload();
-=======
->>>>>>> master
 					window.location = baseurl + "/index.php/leagueController/viewLeagueInfo/" + leagueID;
 				}
 				else
@@ -478,11 +403,7 @@ function showEditTeamForm()
 function editTeam()
 {
 	var leagueID = $("#editteam-leagueid").val();
-<<<<<<< HEAD
-	var teamID = $("#editteam-leagueid").val();
-=======
 	var teamID = $("#editteam-teamid").val();
->>>>>>> master
 	var teamName = $("#editteam-teamname").val();
 	var teamDesc = $("#editteam-teamdesc").val();
 	var teamCoachSurname = $("#editteam-surname").val();
@@ -504,13 +425,6 @@ function editTeam()
 			success: function(msg){
 				if (msg == 1)
 				{
-<<<<<<< HEAD
-					$("div#tooltipEditTeam").removeClass().addClass("alert alert-success");
-					$("div#tooltipEditTeam").html('<strong>SUCCESS: </strong>The team info has been successfully updated.');
-				//	$("#addSport").modal('hide');
-				//	location.reload();
-=======
->>>>>>> master
 					window.location = baseurl + "/index.php/leagueController/viewLeagueInfo/" + leagueID;
 				}
 				else
@@ -530,8 +444,6 @@ function editTeam()
 	});
 }
 
-<<<<<<< HEAD
-=======
 function showRemoveTeamDialog()
 {
 	$("#removeteam-dialog").dialog("open");
@@ -621,7 +533,6 @@ function submitWinner()
 	// alert(winnerID);
 }
 
->>>>>>> master
 function cancelSport()
 {
 	$("#removesport-dialog").dialog( "close" );

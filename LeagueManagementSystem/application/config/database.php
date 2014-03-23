@@ -49,15 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-<<<<<<< HEAD
-$db['default']['username'] = 'df_lms';
-$db['default']['password'] = 'donutfortress';
-$db['default']['database'] = 'donutfortress';
-=======
 $db['default']['username'] = '';
 $db['default']['password'] = '';
 $db['default']['database'] = '';
->>>>>>> master
 $db['default']['dbdriver'] = 'postgre';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

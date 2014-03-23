@@ -1,4 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 class TournamentController extends CI_Controller 
 {
 	function __construct()
@@ -9,9 +10,8 @@ class TournamentController extends CI_Controller
 		$this->load->model('credentialModel','',TRUE);
 		$this->load->model('leagueList','',TRUE);
 		$this->load->model('teamList','',TRUE);
-		//$this->load->model('singleEliminationTournamentList','',TRUE);
-		//$this->load->model('doubleEliminationTournamentList','',TRUE);
-		$this->load->model('tournamentList','',TRUE);
+		$this->load->model('singleEliminationTournamentList','',TRUE);
+		$this->load->model('doubleEliminationTournamentList','',TRUE);
 	}
 	
 	function startTournament()
@@ -76,9 +76,13 @@ class TournamentController extends CI_Controller
 			$data['include'] = 'tournament/tournament';
 			$data['masthead'] = 'tournament/tournament_masthead';
 			if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
+			{
 				$data['nav'] = 'tournament/tournament_navigation';
+			}
 			else
+			{
 				$data['nav'] = 'initial/initial_navigation';
+			}
 			$data['league_id']= $leagueID;
 			$data['sidebar'] = 'tournament/tournament_sidebar';
 			$this->load->view('template', $data);		
@@ -139,7 +143,7 @@ class TournamentController extends CI_Controller
 	function unstartLeague()
 	{
 		$leagueID = $this->uri->segment(3);
-		$this->tournamentList->resetTournament($leagueID);
+		$this->singleEliminationTournamentList->resetTournament($leagueID);
 		$this->leagueList->setUnstarted($leagueID);
 		redirect('leagueController/viewLeagueInfo/'.$leagueID.'/');
 	}

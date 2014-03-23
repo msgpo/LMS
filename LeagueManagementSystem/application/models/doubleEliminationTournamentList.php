@@ -385,7 +385,13 @@ class DoubleEliminationTournamentList  extends TournamentList
 			array_push($team_ids, $team->team_id);
 		}
 		return $team_ids;
-	}	
+	}
+	
+	/*function resetTournament($league_id)
+	{
+		$this->db->query("DELETE from match WHERE league_id = $league_id");
+	}*/
+	
 	
 	//function to unset the winner of the particular match
 	public function unsetMatch($league_id, $match_id)

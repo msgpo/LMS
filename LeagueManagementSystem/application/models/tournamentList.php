@@ -15,10 +15,5 @@ abstract class TournamentList  extends CI_Model
 	
 	abstract protected function insertMatch(Match $match, $league_id);
 	
-	public function resetTournament($league_id)
-	{
-		$this->db->query("UPDATE match set accessible=false WHERE league_id = $league_id");
-	}
-	
 	//abstract protected function updateMatchListing($winnerTeam, $matchID, $leagueID);
 }?>
