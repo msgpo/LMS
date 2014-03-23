@@ -6,8 +6,9 @@ class SportController extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->helper('url');
-		$this->load->model('authentication','',TRUE);
+		$this->load->model('credentialModel','',TRUE);
 		$this->load->model('sportList','',TRUE);
+		$this->load->library('pagination');
 	}
 	
 	function index()
@@ -17,52 +18,76 @@ class SportController extends CI_Controller
 	
 	function sportlist()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		$config = array();
+		$config["base_url"] = base_url() . "index.php/sportController/sportlist";
+		$config["total_rows"] = $this->sportList->countAllAvailableSports()->row()->record_count;
+		$config["per_page"] = 5;
+		$config["uri_segment"] = 3;
+		
+		$this->pagination->initialize($config);
+		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		
+		// $sports_qry = $this->sportList->getSportList();
+		$sports_qry = $this->sportList->getSportListWithLimit($config["per_page"], $page);
+		$data['headline'] = "Sport Listing";
+		$data['sports_query'] = $sports_qry;
+		$data['masthead'] = 'sport/sport_masthead';
+		$data['links'] = $this->pagination->create_links();
+		
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$sports_qry = $this->sportList->getSportList();
+			// League Manager View
 			$data['title'] = "Donut Fortress League Management System: Sport Module";
-			$data['headline'] = "Sport Listing";
 			$data['include'] = 'sport/sport_index';
-			$data['sports_query'] = $sports_qry;
-			$data['masthead'] = 'sport/sport_masthead';
-			$data['nav'] = 'sport/sport_navigation';
+			$data['nav'] = 'home/home_navigation';
 			$data['sidebar'] = 'sport/sport_sidebar';
-			$this->load->view('template', $data);
 		}
 		else
-			redirect('login');
+		{
+			// Guest View
+			$data['title'] = "Donut Fortress League Management System: Sport List";
+			$data['include'] = 'sport/sport_index_guest';
+			$data['nav'] = 'sport/sport_navigation_guest';
+			$data['sidebar'] = 'sport/sport_sidebar_guest';
+		}
+		$this->load->view('template', $data);
 	}
 	
-	function addSport()
+	/**function addSport()
 	{	
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$data['title'] = "Donut Fortress League Management System: Sport Module";
 			$data['headline'] = "Add a New Sport";
 			$data['include'] = 'sport/sport_add';
 			$data['masthead'] = 'sport/sport_masthead';
-			$data['nav'] = 'sport/sport_navigation';
+			$data['nav'] = 'home/home_navigation';
 			$data['sidebar'] = 'sport/sport_sidebar';
 			$this->load->view('template', $data);
 			$this->session->unset_userdata('err');
 		}
 		else
 			redirect('login');
-	}
+	}**/
 	
 	function create()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$sport=new Sport($_POST['sportname']);
 			$result=$this->sportList->addSport($sport);
 			if($result==1)
-				redirect('sportController/sportlist');
+			{
+				$notif=array('notification'=> "A new Sport has been succesfully created");
+				$this->session->set_userdata($notif);
+				echo $result;
+			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('sportController/addSport');
+				//redirect('sportController/addSport');
+				echo $errors['err'];
 			}
 		}
 		else
@@ -72,7 +97,7 @@ class SportController extends CI_Controller
 	
 	function edit()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
 			$id = $this->uri->segment(3);
 			$data['row'] = $this->sportList->getSportById($id)->result();
@@ -80,7 +105,7 @@ class SportController extends CI_Controller
 			$data['headline'] = "Edit Sport Name";
 			$data['include'] = 'sport/sport_edit';
 			$data['masthead'] = 'sport/sport_masthead';
-			$data['nav'] = 'sport/sport_navigation';
+			$data['nav'] = 'home/home_navigation';
 			$data['sidebar'] = 'sport/sport_sidebar';
 			$this->load->view('template', $data);
 			$this->session->unset_userdata('err');
@@ -91,17 +116,21 @@ class SportController extends CI_Controller
 	
 	function update()
 	{
-		if ($this->authentication->checkIfLoggedIn($this->session->userdata('username')))
+		if ($this->credentialModel->checkIfLoggedIn($this->session->userdata('username')))
 		{
-			$newsport=new Sport($_POST['sportname']);
-			$result=$this->sportList->editSport($_POST['sport_id'], $newsport);
+			$newsport=new Sport($_POST['sname']);
+			$result=$this->sportList->editSport($_POST['id'], $newsport);
 			if($result==1)
-				redirect('sportController/sportlist');
+			{
+				$notif=array('notification'=> "A Sport has succesfully updated");
+				$this->session->set_userdata($notif);
+				echo $result;
+			}
 			else
 			{	
 				$errors=array('err'=> $result);
 				$this->session->set_userdata($errors);
-				redirect('sportController/edit/'.$_POST['sport_id'].'/');
+				echo $errors['err'];
 			}
 		}
 		else
@@ -110,10 +139,18 @@ class SportController extends CI_Controller
 	
 	function remove()
 	{
-		$sport_id = $this->uri->segment(3);
-		$this->sportList->disableSport($sport_id);
-		redirect('sportController/index');
+		//$sport_id = $this->uri->segment(3);
+		$sport_id = $_POST['sport_id'];
+		$result= $this->sportList->disableSport($sport_id);
+		if($result==1)
+		{
+			$notif=array('notification'=> "A Sport has succesfully removed");
+			$this->session->set_userdata($notif);
+			echo $result;
+		}
+		else
+			echo $result;
+			//$notif=array('notification'=> $result);
 	}
-	
 }
 ?>

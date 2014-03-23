@@ -34,7 +34,7 @@
 	?>
 </select></p>
 <p>Date (YYYY-MM-DD): <input type="text" name="registrationdeadline" value="<?php echo $row[0]->registrationdeadline; ?>"> </p>
-<button type="submit" class="btn btn-primary">Edit League</button></</form>
+<button type="submit" class="btn btn-primary">Edit League</button></form>
 <?php
 	$errors=$this->session->userdata('err');
 	if(is_array($errors))

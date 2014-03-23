@@ -3,21 +3,26 @@ class Match
 {
         private $teamA;
 		private $teamB;
-		private $scoreOfA;
-		private $scoreOfB;
 		private $winner;
 		private $loser;
 		private $roundNumber;
+		private $bracket;
 		
-		function __construct($teamA, $teamB, $roundNumber)
+		function __construct($teamA, $teamB, $roundNumber,$bracket)
 		{
 			$this->teamA=$teamA;
 			$this->teamB=$teamB;
 			$this->roundNumber=$roundNumber;
+			$this->bracket=$bracket;
 		}
 		public function getTeamA()
 		{
 			return $this->teamA;
+		}
+		
+		public function getBracket()
+		{
+			return $this->bracket;
 		}
 		public function getTeamB()
 		{

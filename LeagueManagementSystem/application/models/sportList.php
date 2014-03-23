@@ -25,7 +25,7 @@ class SportList extends CI_Model
 	
 	function insert(Sport $sport)
 	{
-		$s=strtolower($sport->getSportname());
+		$s=$sport->getSportname();
 		$this->db->query("INSERT INTO sport(sportname) VALUES ('$s')");
 		return 1;
 	}
@@ -42,7 +42,7 @@ class SportList extends CI_Model
 	{
 		if($this->getSportById($id)->num_rows()>0)
 		{
-			$sportname=strtolower($sport->getSportname());
+			$sportname=$sport->getSportname();
 			$this->db->query("UPDATE sport SET sportname='$sportname' WHERE sport_id='$id'");
 			return 1;
 		}
@@ -52,7 +52,7 @@ class SportList extends CI_Model
 	
 	function getSportList()
 	{
-		return $this->db->query("SELECT * FROM sport WHERE accessible = 'true' ORDER BY sport_id");
+		return $this->db->query("SELECT * FROM sport WHERE accessible = 'true' ORDER BY sportname ASC");
 	}
 	
 	function disableSport($id)
@@ -83,8 +83,8 @@ class SportList extends CI_Model
 	
 	function sportnameExist($sport)
 	{
-		$sportname=strtolower($sport->getSportname());
-		$result=$this->db->query("SELECT * FROM sport where sportname='$sportname' AND accessible='true'");
+		$sportname=$sport->getSportname();
+		$result=$this->db->query("SELECT * FROM sport where LOWER(sportname)=LOWER('$sportname') AND accessible='true'");
 		if($result->num_rows()>0)
 			return TRUE;
 		else

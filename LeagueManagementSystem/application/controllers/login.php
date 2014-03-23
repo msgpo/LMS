@@ -6,28 +6,38 @@ class Login extends CI_Controller
         {
             parent::__construct();
 		//$this->load->model('account','',TRUE);
-		$this->load->model('authentication','',TRUE);
+		$this->load->model('credentialModel','',TRUE);
         }
 
 	function index()
 	{
 		$data['message']=null;
-		$this->load->view('login',$data);
+		$data['message']=null;
+		$data['title'] = "Donut Fortress League Management System";
+		$data['headline'] = "Welcome.";
+		$data['include'] = 'login/login';
+		$data['nav'] = 'login/login_navigation';
+		$data['masthead'] = 'login/login_masthead';
+		$data['sidebar'] = 'login/login_sidebar';
+		$this->load->view('template', $data);
 	}
 	function logging_in()
 	{
-		$account=new Account($this->input->post("username"),$this->input->post("password"));
-		$result=$this->authentication->login($account);
-		if($result==null)
+		// $account=new Account($this->input->post("username"),$this->input->post("password"));
+		$account = new Account($_POST['usrnme'], $_POST['pwd']);
+		$result=$this->credentialModel->login($account);
+		if($result==1)
 		{
 			$credentials = array('username' => $account->getUsername(), 'password' => $account->getPassword());
 			$this->session->set_userdata($credentials);
-			redirect('home');
+			// redirect('home');
+			echo $result;
 		}
 		else
 		{
-			$data['message']=$result;
-			$this->load->view('login',$data);
+			// $data['message']=$result;
+			// $this->load->view('login',$data);
+			echo $result;
 		}
 	}
 	
@@ -35,7 +45,7 @@ class Login extends CI_Controller
 	{
 		$this->session->sess_destroy();
 		$data['message'] = null;
-		redirect('login', $data);
+		redirect('initial', $data);
 	}
 }
 ?>
