@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="<?php echo base_url(); ?>df_lms_new/ico/favicon.png">
 	
-	<title><?php echo $title;?></title>
+	<title>Donut Fortress League Management System</title>
 	
 	<script src="<?php echo base_url(); ?>jquery-ui-1.10.4.custom/js/jquery-1.10.2.js"></script>
 	
@@ -50,17 +50,23 @@
 			$( "#datepicker2" ).datepicker({dateFormat: "yy-mm-dd"});
 		});
 	</script>
-	
-	<script src="<?php echo base_url(); ?>scripts/donutfortress.js"></script>
-	<script src="<?php echo base_url(); ?>scripts/starlight.js"></script>
-	
+
 </head>
 <body data-spy="scroll" data-offset="0" data-target="#theMenu">
 <nav class="menu" id="theMenu">
-		<div class="menu-wrap">
-			<?php $this->load->view($nav); ?>
-			<br />
-			<?php $this->load->view($sidebar); ?>
+	<div class="menu-wrap">
+		<div id="primarynav">
+			<h1 class="logo"><a id="homepage" href="#">Donut Fortress LMS</a></h1>
+			<i class="icon-remove menu-close"></i>
+			<a id="sport-module" href="#">Sports</a>
+			<a title="Not yet revised" href="#">Leagues</a>
+			<div id="checklogin">
+				<a id="login-admin" href="#">Login</a>
+			</div>
+		</div>
+		<br />
+		<!--<p>Secondary navigation here</p>-->
+		<div id="sidebar"></div>
 		</div>
 		
 		<!-- Menu button -->
@@ -69,13 +75,34 @@
 	
 	<!-- ========== HEADER SECTION ========== -->
 	<!-- <section id="home" name="home"></section> -->
-	<?php $this->load->view($masthead); ?>
-	
-	<div class="container">
-		<h1><?php echo $headline;?></h1>
-		<?php $this->load->view($include);?>
+	<!--<p>Masthead image here.</p>-->
+	<?php
+	/* DO NOT REMOVE YET: Use the sessions later
+	$notification=$this->session->userdata('notification');
+	if ($notification)
+	{
+	echo '<div class="panel panel-default"><div class="panel-body">';
+	echo '<div class="alert alert-success"><h3>'.$notification.'</h3></div>';
+	echo '</div></div>';
+	}
+	$this->session->unset_userdata('notification');
+*/	?>
+	<div id="masthead">
+	<div id="homewrap"><div class="container"><br /><h1>League Management System</h1><h2></h2><div class="row"><br><br><br><div class="col-lg-6 col-lg-offset-3"></div></div></div><!-- /container --></div><!-- /headerwrap -->
 	</div>
-	
+	<br/><br/>
+	<div class="container">
+		<h1 id="pagetitle">Welcome.</h1>
+		<div id="pagecontent">
+		</div>
+		<div id="tableshere">
+			<table id="table" class="table table-hover">
+			</table>
+		</div>
+		<!-- Load necessary buttons here, e.g. Add Sport, Edit League, Deactivate League... -->
+		<div id="tableoneoptions"></div>
+	</div>
+	<br/><br/><br/><br/><br/><br/><br/><br/>
 	<!-- ========== FOOTER SECTION ========== -->
 	<section id="contact" name="contact"></section>
 	<div id="f">
@@ -117,7 +144,45 @@
 	
 <!-- Start of modals used by all features -->
 <div id="loading-box" title="Please wait, mate.">
-	<img src="<?php echo base_url(); ?>df_lms_new/img/australia-flag-waving-emoticon-animated.gif" alt="Loading..." />
+	<img src="<?php echo base_url(); ?>df_lms_new/img/windows8-loading.gif" alt="Loading..." />
+</div>
+<!-- Login -->
+<div id="login-dialog">
+	<p class="notiferror">Invalid username or password.</p>
+	<img alt="Donut Fortress LMS logo" src="<?php echo base_url(); ?>df_lms/images/df_lms_backdrop.png" /><br />
+	<label for="username">Username</label>
+	<input class="form-control" id="username" autocomplete="off" type="text" name="username" />
+	<label for="password">Password</label>
+	<input class="form-control" id="password" type="password" name="password" />
+	<button type="submit" id="submitLogin" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover" role="button"><span class="ui-button-text">Login </span></button>
+</div>
+<!-- Edit Sport -->
+<div id="editsport-dialog" title="Edit Sport">
+	<input type="hidden" id="sportid" name="sportid" value="" />
+	<label for="editsportname">Sport Name</label>
+	<input class="form-control" placeholder="Enter a sport name here" value="" type="text" id="editsportname" name="sportname" />
+	<div id="tooltipEdit" class="alert alert-info">
+		<strong>TIP: </strong>Sport names are case insensitive.
+	</div>
+	<button type="button" class="btn btn-primary" id="submitEditSport">Edit Sport</button>
+</div>
+<!-- Remove Sport -->
+<div id="removesport-dialog" title="Remove this Sport?">
+	<input type="hidden" id="removesportid" name="sportid" value="" />
+	<input type="hidden" id="removesportname" name="sportname" value="" />
+	<div id="tooltipRemove" class="alert alert-warning">
+	</div>
+	<button type="button" class="btn btn-danger" id="submitRemoveSport">Remove Sport</button>
+	<!--<button type="button" class="btn btn-default" id="submitCancel">Cancel</button>-->
+</div>
+<!-- Add Sport -->
+<div id="addsport-dialog" title="Add Sport">
+	<label for="sportname">Sport Name</label>
+	<input class="form-control" placeholder="Enter a sport name here" value="" type="text" id="sportname" name="sportname" />
+	<div id="tooltip" class="alert alert-info">
+		<strong>TIP: </strong>Sport names are case insensitive.
+	</div>
+	<button type="button" class="btn btn-primary" id="submitAddSport">Add Sport</button>
 </div>
 
 <!-- End modals here -->
@@ -125,6 +190,8 @@
 <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+	<script src="<?php echo base_url(); ?>scripts/donutfortress.js"></script>
+	<script src="<?php echo base_url(); ?>scripts/starlight.js"></script>
 	<script src="<?php echo base_url(); ?>df_lms_new/js/classie.js"></script>
     <script src="<?php echo base_url(); ?>df_lms_new/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>df_lms_new/js/smoothscroll.js"></script>

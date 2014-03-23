@@ -5,7 +5,6 @@ class Login extends CI_Controller
         function __construct()
         {
             parent::__construct();
-		//$this->load->model('account','',TRUE);
 		$this->load->model('credentialModel','',TRUE);
         }
 
@@ -41,11 +40,21 @@ class Login extends CI_Controller
 		}
 	}
 	
+	function checkSetUsername()
+	{
+		$username = $this->session->userdata('username');
+		if ($username)
+			echo 1;
+		else
+			echo 0;
+	}
+	
 	function logout()
 	{
 		$this->session->sess_destroy();
 		$data['message'] = null;
-		redirect('initial', $data);
+		//redirect('initial', $data);
+		echo "success";
 	}
 }
 ?>

@@ -38,9 +38,8 @@
 |
 */
 
-$route['default_controller'] = "queue";
+$route['default_controller'] = "home";
 $route['404_override'] = '';
-$route['myHome'] = "home";;
 
 
 /* End of file routes.php */

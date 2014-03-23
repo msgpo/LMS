@@ -25,29 +25,30 @@ class SportList extends CI_Model
 	
 	function insert(Sport $sport)
 	{
-		$s=strtolower($sport->getSportname());
+		$s=$sport->getSportname();
 		$this->db->query("INSERT INTO sport(sportname) VALUES ('$s')");
 		return 1;
 	}
 	
 	function editSport($id, Sport $newSport)
 	{
-		if((!$this->sportnameExist($newSport))&&(!$this->sportnameIsBlank($newSport)))
-			return $this->update($id, $newSport);
+		if($this->getSportById($id)->num_rows()>0)
+		{
+			$sportname=$this->getSportById($id)->row()->sportname;
+			if(((!$this->sportnameExist($newSport))&&(!$this->sportnameIsBlank($newSport)))||($this->sportnameIsUnchanged($newSport,$sportname)))
+				return $this->update($id, $newSport);
+			else
+				return ($this->invalidAddOrUpdateSport($newSport));
+		}
 		else
-			return ($this->invalidAddOrUpdateSport($newSport));
+			return "Sport id not found";
 	}
 	
 	function update($id, Sport $sport)
 	{
-		if($this->getSportById($id)->num_rows()>0)
-		{
-			$sportname=strtolower($sport->getSportname());
-			$this->db->query("UPDATE sport SET sportname='$sportname' WHERE sport_id='$id'");
-			return 1;
-		}
-		else
-			return "Sport id not found";
+		$sportname=$sport->getSportname();
+		$this->db->query("UPDATE sport SET sportname='$sportname' WHERE sport_id='$id'");
+		return 1;
 	}
 	
 	function getSportList()
@@ -76,6 +77,14 @@ class SportList extends CI_Model
 	{
 		$result= $this->db->query("SELECT * FROM league WHERE sport_id=$sport_id AND accessible = 'true'");
 		if($result->num_rows()>0)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	function sportnameIsUnchanged($sport,$sportname)
+	{
+		if(strcasecmp($sport->getSportname(),$sportname)==0)
 			return TRUE;
 		else
 			return FALSE;
@@ -110,6 +119,11 @@ class SportList extends CI_Model
 	function getSportListWithLimit($limit, $start)
 	{
 		return $this->db->query("SELECT * FROM sport WHERE accessible = 'true' ORDER BY sportname LIMIT $limit OFFSET $start");
+	}
+	
+	function getSportListByName($name)
+	{
+		return $this->db->query("SELECT * FROM sport WHERE sportname = '$name' AND accessible = 'true' ORDER BY sportname ASC");
 	}
 }
 ?>

@@ -2,6 +2,7 @@ $(function() {
 
 	$("#loading-box").dialog({
 		autoOpen: false,
+		width: 100,
         resizable: false,
 		modal: false
 	});
@@ -12,12 +13,20 @@ $(function() {
         resizable: false
     });
 	
-	$("#login-admin").click(showLoginForm);
+	$("a#login-admin").click(showLoginForm);
+	//$("#login-admin").on("click", showLoginForm);
+	
+	// Hourai debugging start
+	// Hourai debugging end
 	$("#submitLogin").button();
     $("#submitLogin").button().bind("click",
         checkAccount);
 		
+	$("#homepage").click(loadHomePanel);
+		
 	// Sport Module
+	$("#sport-module").click(loadSportModule);
+	
 	$("#addsport-dialog").dialog({
 		autoOpen: false,
 		width: 450,
@@ -47,14 +56,14 @@ $(function() {
 	$("#submitAddSport").button().bind("click",
         addSport);
 	
-	$(".update-sport").button();
-	$(".update-sport").button().bind("click", showEditSportForm);
+//	$(".update-sport").button();
+//	$(".update-sport").button().bind("click", showEditSportForm);
 	$("#submitEditSport").button();
 	$("#submitEditSport").button().bind("click",
         editSport);
 		
-	$(".remove-sport").button();
-	$(".remove-sport").button().bind("click", showRemoveSportDialog);
+//	$(".remove-sport").button();
+//	$(".remove-sport").button().bind("click", showRemoveSportDialog);
 	$("#submitRemoveSport").button();
 	$("#submitRemoveSport").button().bind("click",
         removeSport);
@@ -99,6 +108,9 @@ $(function() {
 	$("#submitUpdateLeague").button();
 	$("#submitUpdateLeague").button().bind("click", updateLeague);
 	
+	$(".reactivate-league").button();
+	$(".reactivate-league").button().bind("click", reactivateLeague);
+	
 	// Teams
 	$("#addteam-dialog").dialog({
 		autoOpen: false,
@@ -116,12 +128,39 @@ $(function() {
 		modal: true
 	});
 	
-	$("#add-team").click(showAddTeamForm);
+	$("#removeteam-dialog").dialog({
+		autoOpen: false,
+		width: 552,
+        height: 355,
+        resizable: true,
+		modal: true
+	});
+	
+	//$("#add-team").click(showAddTeamForm);
+	$("#add-team").button();
+	$("#add-team").button().bind("click", showAddTeamForm)
 	$("#submitAddTeam").button();
 	$("#submitAddTeam").button().bind("click", addTeam);
 	$(".edit-team").click(showEditTeamForm);
 	$("#submitEditTeam").button();
 	$("#submitEditTeam").button().bind("click", editTeam);
+	$(".remove-team").click(showRemoveTeamDialog);
+	$("#submitRemoveTeam").button();
+	$("#submitRemoveTeam").button().bind("click", removeTeam);
+	
+	// Set Winner
+	$("#setWinnerDialog").dialog({
+		autoOpen: false,
+		width: 552,
+        height: 250,
+        resizable: true,
+		modal: true
+	});
+	
+	$(".set-winner").button();
+	$(".set-winner").button().bind("click", showSetWinnerDialog);
+	$("#submitSetWinner").button();
+	$("#submitSetWinner").button().bind("click", submitWinner);
 	
 	// global
 	$.ajaxSetup({
@@ -134,9 +173,4 @@ $(function() {
         }
     });
 	
-	
-	// unused
-	$("#submitCancelSport").button();
-	$("#submitCancelSport").button().bind("click",
-        cancelSport);
 });

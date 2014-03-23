@@ -1,1 +1,0 @@
-<p>To manage leagues, you need to log-in.</p>

@@ -1,1 +1,0 @@
-<p>Click on a sport name to view all leagues of a specific sport.</p>
